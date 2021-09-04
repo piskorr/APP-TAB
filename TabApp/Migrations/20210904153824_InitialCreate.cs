@@ -10,13 +10,13 @@ namespace TabApp.Migrations
                 name: "Person",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Surname = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false)
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 30, nullable: false),
+                    Surname = table.Column<string>(type: "TEXT", maxLength: 30, nullable: false),
+                    Address = table.Column<string>(type: "TEXT", maxLength: 60, nullable: false),
+                    Email = table.Column<string>(type: "TEXT", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "TEXT", maxLength: 9, nullable: false)
                 },
                 constraints: table =>
                 {
