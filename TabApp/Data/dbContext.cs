@@ -12,9 +12,7 @@ using TabApp.Models;
         {
         }
 
-        public DbSet<TabApp.Models.Person> Person { get; set; }
-
-        public DbSet<TabApp.Models.Item> Item { get; set; }
-
         public DbSet<TabApp.Models.Worker> Worker { get; set; }
+
+        public DbSet<TabApp.Models.Person> Person { get; set; }
     }

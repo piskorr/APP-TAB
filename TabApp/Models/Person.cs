@@ -21,7 +21,7 @@ namespace TabApp.Models
         [Required]
         public String Address { get; set; }
 
-        [DataType(DataType.EmailAddress)]
+        [StringLength(30)]
         public String Email { get; set; }
 
         [Display(Name = "Phone Number")]
@@ -30,7 +30,7 @@ namespace TabApp.Models
         [Required]
         public String PhoneNumber { get; set; }
 
-        public virtual Worker Worker{ get; set; }
+        public Worker Worker { get; set; }
 
     }
 }

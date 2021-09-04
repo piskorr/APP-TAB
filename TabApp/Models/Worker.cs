@@ -18,7 +18,7 @@ namespace TabApp.Models
 
         [Display(Name = "Account Number")]
         [RegularExpression(@"^[0-9]*$")]
-        [StringLength(26, MinimumLength = 26, ErrorMessage = "26 chars")]
+        [StringLength(26, MinimumLength = 26)]
         [Required]
         public String AccountNumber { get; set; }
 
@@ -27,7 +27,7 @@ namespace TabApp.Models
         [Required]
         public String JobPosition { get; set; }
 
-        [ForeignKey("PersonID")]
-        public  Person Person { get; set; }
+        public int PersonID {get; set;}
+        public Person Person { get; set; }
     }
 }

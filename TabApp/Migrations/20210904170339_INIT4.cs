@@ -2,7 +2,7 @@
 
 namespace TabApp.Migrations
 {
-    public partial class WorkerAddedPerson2 : Migration
+    public partial class INIT4 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

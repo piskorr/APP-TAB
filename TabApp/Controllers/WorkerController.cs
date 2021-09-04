@@ -21,7 +21,8 @@ namespace TabApp.Controllers
         // GET: Worker
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Worker.ToListAsync());
+            var dbContext = _context.Worker.Include(w => w.Person);
+            return View(await dbContext.ToListAsync());
         }
 
         // GET: Worker/Details/5
@@ -33,6 +34,7 @@ namespace TabApp.Controllers
             }
 
             var worker = await _context.Worker
+                .Include(w => w.Person)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (worker == null)
             {
@@ -45,6 +47,7 @@ namespace TabApp.Controllers
         // GET: Worker/Create
         public IActionResult Create()
         {
+            ViewData["PersonID"] = new SelectList(_context.Set<Person>(), "ID", "Address");
             return View();
         }
 
@@ -53,7 +56,7 @@ namespace TabApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Earnings,PESEL,AccountNumber,JobPosition")] Worker worker)
+        public async Task<IActionResult> Create([Bind("ID,Earnings,PESEL,AccountNumber,JobPosition,PersonID")] Worker worker)
         {
             if (ModelState.IsValid)
             {
@@ -61,6 +64,7 @@ namespace TabApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["PersonID"] = new SelectList(_context.Set<Person>(), "ID", "Address", worker.PersonID);
             return View(worker);
         }
 
@@ -77,6 +81,7 @@ namespace TabApp.Controllers
             {
                 return NotFound();
             }
+            ViewData["PersonID"] = new SelectList(_context.Set<Person>(), "ID", "Address", worker.PersonID);
             return View(worker);
         }
 
@@ -85,7 +90,7 @@ namespace TabApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Earnings,PESEL,AccountNumber,JobPosition")] Worker worker)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Earnings,PESEL,AccountNumber,JobPosition,PersonID")] Worker worker)
         {
             if (id != worker.ID)
             {
@@ -112,6 +117,7 @@ namespace TabApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["PersonID"] = new SelectList(_context.Set<Person>(), "ID", "Address", worker.PersonID);
             return View(worker);
         }
 
@@ -124,6 +130,7 @@ namespace TabApp.Controllers
             }
 
             var worker = await _context.Worker
+                .Include(w => w.Person)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (worker == null)
             {

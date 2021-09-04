@@ -7,35 +7,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TabApp.Migrations
 {
     [DbContext(typeof(dbContext))]
-    [Migration("20210904161643_WorkerAddedPerson2")]
-    partial class WorkerAddedPerson2
+    [Migration("20210904170427_INIT5")]
+    partial class INIT5
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.9");
-
-            modelBuilder.Entity("TabApp.Models.Item", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SerialNumber")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Item");
-                });
 
             modelBuilder.Entity("TabApp.Models.Person", b =>
                 {
@@ -49,6 +28,7 @@ namespace TabApp.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
+                        .HasMaxLength(30)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -100,7 +80,8 @@ namespace TabApp.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("PersonID");
+                    b.HasIndex("PersonID")
+                        .IsUnique();
 
                     b.ToTable("Worker");
                 });
@@ -108,12 +89,17 @@ namespace TabApp.Migrations
             modelBuilder.Entity("TabApp.Models.Worker", b =>
                 {
                     b.HasOne("TabApp.Models.Person", "Person")
-                        .WithMany()
-                        .HasForeignKey("PersonID")
+                        .WithOne("Worker")
+                        .HasForeignKey("TabApp.Models.Worker", "PersonID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Person");
+                });
+
+            modelBuilder.Entity("TabApp.Models.Person", b =>
+                {
+                    b.Navigation("Worker");
                 });
 #pragma warning restore 612, 618
         }
