@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TabApp.Models
 {
@@ -16,5 +18,10 @@ namespace TabApp.Models
         [StringLength(100, MinimumLength = 3)]
         [Required]
         public String Description { get; set; }
+
+        public Person Person { get; set; }
+        
+        public ICollection<Repair> Repair { get; set; }
     }
+
 }

@@ -6,6 +6,8 @@ namespace TabApp.Models
 {
     public class Worker
     {
+        [Key]
+        public int PersonID { get; set; }
 
         [DataType(DataType.Currency)]
         public int Earnings { get; set; }
@@ -26,8 +28,6 @@ namespace TabApp.Models
         [Required]
         public String JobPosition { get; set; }
 
-        [Key]
-        public int PersonID {get; set;}
         public Person Person { get; set; }
     }
 }
