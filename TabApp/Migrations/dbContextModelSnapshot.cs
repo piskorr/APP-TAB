@@ -51,8 +51,7 @@ namespace TabApp.Migrations
 
             modelBuilder.Entity("TabApp.Models.Worker", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("PersonID")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("AccountNumber")
@@ -73,13 +72,7 @@ namespace TabApp.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PersonID")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("PersonID")
-                        .IsUnique();
+                    b.HasKey("PersonID");
 
                     b.ToTable("Worker");
                 });

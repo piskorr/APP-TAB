@@ -35,7 +35,7 @@ namespace TabApp.Controllers
 
             var worker = await _context.Worker
                 .Include(w => w.Person)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.PersonID == id);
             if (worker == null)
             {
                 return NotFound();
@@ -47,7 +47,7 @@ namespace TabApp.Controllers
         // GET: Worker/Create
         public IActionResult Create()
         {
-            ViewData["PersonID"] = new SelectList(_context.Set<Person>(), "ID", "Address");
+            ViewData["PersonID"] = new SelectList(_context.Person, "ID", "Address");
             return View();
         }
 
@@ -56,15 +56,20 @@ namespace TabApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Earnings,PESEL,AccountNumber,JobPosition,PersonID")] Worker worker)
+        public async Task<IActionResult> Create([Bind("Earnings,PESEL,AccountNumber,JobPosition,PersonID,Name,Surname,Address,Email,PhoneNumber")] Worker worker, Person person)
         {
             if (ModelState.IsValid)
             {
+
+                _context.Add(person);
+                await _context.SaveChangesAsync();
+                worker.PersonID = person.ID;
                 _context.Add(worker);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PersonID"] = new SelectList(_context.Set<Person>(), "ID", "Address", worker.PersonID);
+            ViewData["PersonID"] = new SelectList(_context.Person, "ID", "Address", worker.PersonID);
             return View(worker);
         }
 
@@ -81,7 +86,7 @@ namespace TabApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["PersonID"] = new SelectList(_context.Set<Person>(), "ID", "Address", worker.PersonID);
+            ViewData["PersonID"] = new SelectList(_context.Person, "ID", "Address", worker.PersonID);
             return View(worker);
         }
 
@@ -90,9 +95,9 @@ namespace TabApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Earnings,PESEL,AccountNumber,JobPosition,PersonID")] Worker worker)
+        public async Task<IActionResult> Edit(int id, [Bind("Earnings,PESEL,AccountNumber,JobPosition,PersonID")] Worker worker)
         {
-            if (id != worker.ID)
+            if (id != worker.PersonID)
             {
                 return NotFound();
             }
@@ -106,7 +111,7 @@ namespace TabApp.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!WorkerExists(worker.ID))
+                    if (!WorkerExists(worker.PersonID))
                     {
                         return NotFound();
                     }
@@ -117,7 +122,7 @@ namespace TabApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PersonID"] = new SelectList(_context.Set<Person>(), "ID", "Address", worker.PersonID);
+            ViewData["PersonID"] = new SelectList(_context.Person, "ID", "Address", worker.PersonID);
             return View(worker);
         }
 
@@ -131,7 +136,7 @@ namespace TabApp.Controllers
 
             var worker = await _context.Worker
                 .Include(w => w.Person)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.PersonID == id);
             if (worker == null)
             {
                 return NotFound();
@@ -153,7 +158,7 @@ namespace TabApp.Controllers
 
         private bool WorkerExists(int id)
         {
-            return _context.Worker.Any(e => e.ID == id);
+            return _context.Worker.Any(e => e.PersonID == id);
         }
     }
 }
