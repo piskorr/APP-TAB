@@ -2,14 +2,16 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace TabApp.Migrations
 {
     [DbContext(typeof(dbContext))]
-    partial class dbContextModelSnapshot : ModelSnapshot
+    [Migration("20210904161945_WorkerAddedPerson7")]
+    partial class WorkerAddedPerson7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,8 +101,7 @@ namespace TabApp.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("PersonID")
-                        .IsUnique();
+                    b.HasIndex("PersonID");
 
                     b.ToTable("Worker");
                 });
@@ -108,15 +109,10 @@ namespace TabApp.Migrations
             modelBuilder.Entity("TabApp.Models.Worker", b =>
                 {
                     b.HasOne("TabApp.Models.Person", "Person")
-                        .WithOne("Worker")
-                        .HasForeignKey("TabApp.Models.Worker", "PersonID");
+                        .WithMany()
+                        .HasForeignKey("PersonID");
 
                     b.Navigation("Person");
-                });
-
-            modelBuilder.Entity("TabApp.Models.Person", b =>
-                {
-                    b.Navigation("Worker");
                 });
 #pragma warning restore 612, 618
         }

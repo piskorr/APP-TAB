@@ -27,6 +27,7 @@ namespace TabApp.Models
         [Required]
         public String JobPosition { get; set; }
 
-        public Person Person { get; set; }
+        [ForeignKey("PersonID")]
+        public  Person Person { get; set; }
     }
 }

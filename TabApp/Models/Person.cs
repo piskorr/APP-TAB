@@ -29,6 +29,9 @@ namespace TabApp.Models
         [StringLength(9, MinimumLength = 9)]
         [Required]
         public String PhoneNumber { get; set; }
+
+        public virtual Worker Worker{ get; set; }
+
     }
 }
 
