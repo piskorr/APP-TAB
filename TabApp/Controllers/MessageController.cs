@@ -9,23 +9,22 @@ using TabApp.Models;
 
 namespace TabApp.Controllers
 {
-    public class WorkerController : Controller
+    public class MessageController : Controller
     {
         private readonly dbContext _context;
 
-        public WorkerController(dbContext context)
+        public MessageController(dbContext context)
         {
             _context = context;
         }
 
-        // GET: Worker
+        // GET: Message
         public async Task<IActionResult> Index()
         {
-            var dbContext = _context.Worker.Include(w => w.Person);
-            return View(await dbContext.ToListAsync());
+            return View(await _context.Message.ToListAsync());
         }
 
-        // GET: Worker/Details/5
+        // GET: Message/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,47 +32,39 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
-            var worker = await _context.Worker
-                .Include(w => w.Person)
-                .FirstOrDefaultAsync(m => m.PersonID == id);
-            if (worker == null)
+            var message = await _context.Message
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (message == null)
             {
                 return NotFound();
             }
 
-            return View(worker);
+            return View(message);
         }
 
-        // GET: Worker/Create
+        // GET: Message/Create
         public IActionResult Create()
         {
-            ViewData["PersonID"] = new SelectList(_context.Person, "ID", "Address");
             return View();
         }
 
-        // POST: Worker/Create
+        // POST: Message/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Earnings,PESEL,AccountNumber,JobPosition,PersonID,Name,Surname,Address,Email,PhoneNumber")] Worker worker, Person person)
+        public async Task<IActionResult> Create([Bind("ID,Content,Date")] Message message)
         {
             if (ModelState.IsValid)
             {
-
-                _context.Add(person);
+                _context.Add(message);
                 await _context.SaveChangesAsync();
-                worker.PersonID = person.ID;
-                _context.Add(worker);
-                await _context.SaveChangesAsync();
-
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PersonID"] = new SelectList(_context.Person, "ID", "Address", worker.PersonID);
-            return View(worker);
+            return View(message);
         }
 
-        // GET: Worker/Edit/5
+        // GET: Message/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -81,23 +72,22 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
-            var worker = await _context.Worker.FindAsync(id);
-            if (worker == null)
+            var message = await _context.Message.FindAsync(id);
+            if (message == null)
             {
                 return NotFound();
             }
-            ViewData["PersonID"] = new SelectList(_context.Person, "ID", "Address", worker.PersonID);
-            return View(worker);
+            return View(message);
         }
 
-        // POST: Worker/Edit/5
+        // POST: Message/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PersonID,Earnings,PESEL,AccountNumber,JobPosition")] Worker worker)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Content,Date")] Message message)
         {
-            if (id != worker.PersonID)
+            if (id != message.ID)
             {
                 return NotFound();
             }
@@ -106,12 +96,12 @@ namespace TabApp.Controllers
             {
                 try
                 {
-                    _context.Update(worker);
+                    _context.Update(message);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!WorkerExists(worker.PersonID))
+                    if (!MessageExists(message.ID))
                     {
                         return NotFound();
                     }
@@ -122,11 +112,10 @@ namespace TabApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PersonID"] = new SelectList(_context.Person, "ID", "Address", worker.PersonID);
-            return View(worker);
+            return View(message);
         }
 
-        // GET: Worker/Delete/5
+        // GET: Message/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -134,31 +123,30 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
-            var worker = await _context.Worker
-                .Include(w => w.Person)
-                .FirstOrDefaultAsync(m => m.PersonID == id);
-            if (worker == null)
+            var message = await _context.Message
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (message == null)
             {
                 return NotFound();
             }
 
-            return View(worker);
+            return View(message);
         }
 
-        // POST: Worker/Delete/5
+        // POST: Message/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var worker = await _context.Worker.FindAsync(id);
-            _context.Worker.Remove(worker);
+            var message = await _context.Message.FindAsync(id);
+            _context.Message.Remove(message);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool WorkerExists(int id)
+        private bool MessageExists(int id)
         {
-            return _context.Worker.Any(e => e.PersonID == id);
+            return _context.Message.Any(e => e.ID == id);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace TabApp.Models
 {
@@ -21,7 +22,7 @@ namespace TabApp.Models
         [Required]
         public String Address { get; set; }
 
-        [StringLength(30)]
+        [DataType(DataType.EmailAddress)]
         public String Email { get; set; }
 
         [Display(Name = "Phone Number")]
@@ -30,10 +31,19 @@ namespace TabApp.Models
         [Required]
         public String PhoneNumber { get; set; }
 
-        public Worker Worker { get; set; }
+        public virtual Worker Worker { get; set; }
 
+        public ICollection<Item> Item { get; set; }
+
+
+        public ICollection<Message> SendMessage { get; set; }
+
+
+        public ICollection<Message> ReciveMessage { get; set; }
+
+        public ICollection<Invoice> Invoice { get; set; }
+
+        public ICollection<Service> Service { get; set; }
     }
+
 }
-
-
-

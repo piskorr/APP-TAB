@@ -9,23 +9,22 @@ using TabApp.Models;
 
 namespace TabApp.Controllers
 {
-    public class WorkerController : Controller
+    public class ServiceController : Controller
     {
         private readonly dbContext _context;
 
-        public WorkerController(dbContext context)
+        public ServiceController(dbContext context)
         {
             _context = context;
         }
 
-        // GET: Worker
+        // GET: Service
         public async Task<IActionResult> Index()
         {
-            var dbContext = _context.Worker.Include(w => w.Person);
-            return View(await dbContext.ToListAsync());
+            return View(await _context.Service.ToListAsync());
         }
 
-        // GET: Worker/Details/5
+        // GET: Service/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,47 +32,39 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
-            var worker = await _context.Worker
-                .Include(w => w.Person)
-                .FirstOrDefaultAsync(m => m.PersonID == id);
-            if (worker == null)
+            var service = await _context.Service
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (service == null)
             {
                 return NotFound();
             }
 
-            return View(worker);
+            return View(service);
         }
 
-        // GET: Worker/Create
+        // GET: Service/Create
         public IActionResult Create()
         {
-            ViewData["PersonID"] = new SelectList(_context.Person, "ID", "Address");
             return View();
         }
 
-        // POST: Worker/Create
+        // POST: Service/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Earnings,PESEL,AccountNumber,JobPosition,PersonID,Name,Surname,Address,Email,PhoneNumber")] Worker worker, Person person)
+        public async Task<IActionResult> Create([Bind("ID,WarrantyDate")] Service service)
         {
             if (ModelState.IsValid)
             {
-
-                _context.Add(person);
+                _context.Add(service);
                 await _context.SaveChangesAsync();
-                worker.PersonID = person.ID;
-                _context.Add(worker);
-                await _context.SaveChangesAsync();
-
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PersonID"] = new SelectList(_context.Person, "ID", "Address", worker.PersonID);
-            return View(worker);
+            return View(service);
         }
 
-        // GET: Worker/Edit/5
+        // GET: Service/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -81,23 +72,22 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
-            var worker = await _context.Worker.FindAsync(id);
-            if (worker == null)
+            var service = await _context.Service.FindAsync(id);
+            if (service == null)
             {
                 return NotFound();
             }
-            ViewData["PersonID"] = new SelectList(_context.Person, "ID", "Address", worker.PersonID);
-            return View(worker);
+            return View(service);
         }
 
-        // POST: Worker/Edit/5
+        // POST: Service/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PersonID,Earnings,PESEL,AccountNumber,JobPosition")] Worker worker)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,WarrantyDate")] Service service)
         {
-            if (id != worker.PersonID)
+            if (id != service.ID)
             {
                 return NotFound();
             }
@@ -106,12 +96,12 @@ namespace TabApp.Controllers
             {
                 try
                 {
-                    _context.Update(worker);
+                    _context.Update(service);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!WorkerExists(worker.PersonID))
+                    if (!ServiceExists(service.ID))
                     {
                         return NotFound();
                     }
@@ -122,11 +112,10 @@ namespace TabApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PersonID"] = new SelectList(_context.Person, "ID", "Address", worker.PersonID);
-            return View(worker);
+            return View(service);
         }
 
-        // GET: Worker/Delete/5
+        // GET: Service/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -134,31 +123,30 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
-            var worker = await _context.Worker
-                .Include(w => w.Person)
-                .FirstOrDefaultAsync(m => m.PersonID == id);
-            if (worker == null)
+            var service = await _context.Service
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (service == null)
             {
                 return NotFound();
             }
 
-            return View(worker);
+            return View(service);
         }
 
-        // POST: Worker/Delete/5
+        // POST: Service/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var worker = await _context.Worker.FindAsync(id);
-            _context.Worker.Remove(worker);
+            var service = await _context.Service.FindAsync(id);
+            _context.Service.Remove(service);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool WorkerExists(int id)
+        private bool ServiceExists(int id)
         {
-            return _context.Worker.Any(e => e.PersonID == id);
+            return _context.Service.Any(e => e.ID == id);
         }
     }
 }
