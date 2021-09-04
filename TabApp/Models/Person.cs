@@ -22,6 +22,7 @@ namespace TabApp.Models
         public String Address { get; set; }
 
         [StringLength(30)]
+        [DataType(DataType.EmailAddress)]
         public String Email { get; set; }
 
         [Display(Name = "Phone Number")]
