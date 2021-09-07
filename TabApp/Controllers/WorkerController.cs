@@ -60,7 +60,6 @@ namespace TabApp.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 _context.Add(person);
                 await _context.SaveChangesAsync();
                 worker.PersonID = person.ID;

@@ -49,19 +49,21 @@ namespace TabApp.Controllers
         }
 
         // GET: Repair/Create/itemId
-         public async Task<IActionResult> Create(int? id)
+         public async Task<IActionResult> Create(int? itemID)
         {
-            if (id != null)
+            if (itemID != null)
             {
-                var item = await _context.Item.FindAsync(id);
+                var item = await _context.Item.FindAsync(itemID);
                 if (item == null)
                 {
                     return NotFound();
                 }
+                ViewBag.ItemID = itemID;
                 ViewBag.ItemSerialNumber = item.SerialNumber;
                 ViewBag.ItemDescription = item.Description;
+                
             }
-            
+
             //ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description");
             return View();
         }
@@ -71,13 +73,18 @@ namespace TabApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Item.SerialNumber,Item.Description,ID,AdmissionDate,IssueDate,Cost,Warranty,Status,PickupCode,ItemID")] Item item, Repair repair)
+        public async Task<IActionResult> Create([Bind("SerialNumber,Description,AdmissionDate,IssueDate,Cost,Warranty,Status,PickupCode")] Item item, Repair repair, int? itemID)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(item);
-                await _context.SaveChangesAsync();
-                repair.ItemID = item.ID;
+                if(itemID != null)
+                {
+                    repair.Item = null;
+                    //_context.Add(item);
+                    //await _context.SaveChangesAsync();
+                   repair.ItemID = itemID;
+                }
+               
                 _context.Add(repair);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
