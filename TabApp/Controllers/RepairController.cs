@@ -2,33 +2,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using TabApp.Enums;
 using TabApp.Models;
 
 namespace TabApp.Controllers
 {
-    [Authorize(Roles = Roles.Employee)]
-    public class PersonController : Controller
+    public class RepairController : Controller
     {
         private readonly dbContext _context;
 
-        public PersonController(dbContext context)
+        public RepairController(dbContext context)
         {
             _context = context;
         }
 
-        // GET: Person
-        [AllowAnonymous]
+        // GET: Repair
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Person.ToListAsync());
+            var dbContext = _context.Repair.Include(r => r.Item);
+            return View(await dbContext.ToListAsync());
         }
 
-        // GET: Person/Details/5
+        // GET: Repair/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -36,39 +33,42 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
-            var person = await _context.Person
+            var repair = await _context.Repair
+                .Include(r => r.Item)
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (person == null)
+            if (repair == null)
             {
                 return NotFound();
             }
 
-            return View(person);
+            return View(repair);
         }
 
-        // GET: Person/Create
+        // GET: Repair/Create
         public IActionResult Create()
         {
+            ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description");
             return View();
         }
 
-        // POST: Person/Create
+        // POST: Repair/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Surname,Address,Email,PhoneNumber")] Person person)
+        public async Task<IActionResult> Create([Bind("ID,AdmissionDate,IssueDate,Cost,Warranty,Status,PickupCode,ItemID")] Repair repair)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(person);
+                _context.Add(repair);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(person);
+            ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description", repair.ItemID);
+            return View(repair);
         }
 
-        // GET: Person/Edit/5
+        // GET: Repair/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,22 +76,23 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
-            var person = await _context.Person.FindAsync(id);
-            if (person == null)
+            var repair = await _context.Repair.FindAsync(id);
+            if (repair == null)
             {
                 return NotFound();
             }
-            return View(person);
+            ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description", repair.ItemID);
+            return View(repair);
         }
 
-        // POST: Person/Edit/5
+        // POST: Repair/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Surname,Address,Email,PhoneNumber")] Person person)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,AdmissionDate,IssueDate,Cost,Warranty,Status,PickupCode,ItemID")] Repair repair)
         {
-            if (id != person.ID)
+            if (id != repair.ID)
             {
                 return NotFound();
             }
@@ -100,12 +101,12 @@ namespace TabApp.Controllers
             {
                 try
                 {
-                    _context.Update(person);
+                    _context.Update(repair);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PersonExists(person.ID))
+                    if (!RepairExists(repair.ID))
                     {
                         return NotFound();
                     }
@@ -116,10 +117,11 @@ namespace TabApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(person);
+            ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description", repair.ItemID);
+            return View(repair);
         }
 
-        // GET: Person/Delete/5
+        // GET: Repair/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -127,30 +129,31 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
-            var person = await _context.Person
+            var repair = await _context.Repair
+                .Include(r => r.Item)
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (person == null)
+            if (repair == null)
             {
                 return NotFound();
             }
 
-            return View(person);
+            return View(repair);
         }
 
-        // POST: Person/Delete/5
+        // POST: Repair/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var person = await _context.Person.FindAsync(id);
-            _context.Person.Remove(person);
+            var repair = await _context.Repair.FindAsync(id);
+            _context.Repair.Remove(repair);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PersonExists(int id)
+        private bool RepairExists(int id)
         {
-            return _context.Person.Any(e => e.ID == id);
+            return _context.Repair.Any(e => e.ID == id);
         }
     }
 }

@@ -11,24 +11,23 @@ using TabApp.Models;
 
 namespace TabApp.Controllers
 {
-    [Authorize(Roles = Roles.Employee)]
-    public class PersonController : Controller
+    [Authorize(Roles = Roles.User)]
+    public class MessageController : Controller
     {
         private readonly dbContext _context;
 
-        public PersonController(dbContext context)
+        public MessageController(dbContext context)
         {
             _context = context;
         }
 
-        // GET: Person
-        [AllowAnonymous]
+        // GET: Message
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Person.ToListAsync());
+            return View(await _context.Message.ToListAsync());
         }
 
-        // GET: Person/Details/5
+        // GET: Message/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -36,39 +35,39 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
-            var person = await _context.Person
+            var message = await _context.Message
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (person == null)
+            if (message == null)
             {
                 return NotFound();
             }
 
-            return View(person);
+            return View(message);
         }
 
-        // GET: Person/Create
+        // GET: Message/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Person/Create
+        // POST: Message/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Surname,Address,Email,PhoneNumber")] Person person)
+        public async Task<IActionResult> Create([Bind("ID,Content,Date")] Message message)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(person);
+                _context.Add(message);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(person);
+            return View(message);
         }
 
-        // GET: Person/Edit/5
+        // GET: Message/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,22 +75,22 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
-            var person = await _context.Person.FindAsync(id);
-            if (person == null)
+            var message = await _context.Message.FindAsync(id);
+            if (message == null)
             {
                 return NotFound();
             }
-            return View(person);
+            return View(message);
         }
 
-        // POST: Person/Edit/5
+        // POST: Message/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Surname,Address,Email,PhoneNumber")] Person person)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Content,Date")] Message message)
         {
-            if (id != person.ID)
+            if (id != message.ID)
             {
                 return NotFound();
             }
@@ -100,12 +99,12 @@ namespace TabApp.Controllers
             {
                 try
                 {
-                    _context.Update(person);
+                    _context.Update(message);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PersonExists(person.ID))
+                    if (!MessageExists(message.ID))
                     {
                         return NotFound();
                     }
@@ -116,10 +115,10 @@ namespace TabApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(person);
+            return View(message);
         }
 
-        // GET: Person/Delete/5
+        // GET: Message/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -127,30 +126,30 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
-            var person = await _context.Person
+            var message = await _context.Message
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (person == null)
+            if (message == null)
             {
                 return NotFound();
             }
 
-            return View(person);
+            return View(message);
         }
 
-        // POST: Person/Delete/5
+        // POST: Message/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var person = await _context.Person.FindAsync(id);
-            _context.Person.Remove(person);
+            var message = await _context.Message.FindAsync(id);
+            _context.Message.Remove(message);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PersonExists(int id)
+        private bool MessageExists(int id)
         {
-            return _context.Person.Any(e => e.ID == id);
+            return _context.Message.Any(e => e.ID == id);
         }
     }
 }

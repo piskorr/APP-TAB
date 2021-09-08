@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TabApp.Migrations
 {
     [DbContext(typeof(dbContext))]
-    [Migration("20210904153824_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20210904172734_PriamryKeyAsForeign")]
+    partial class PriamryKeyAsForeign
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,6 +28,7 @@ namespace TabApp.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
+                        .HasMaxLength(30)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -48,6 +49,50 @@ namespace TabApp.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Person");
+                });
+
+            modelBuilder.Entity("TabApp.Models.Worker", b =>
+                {
+                    b.Property<int>("PersonID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AccountNumber")
+                        .IsRequired()
+                        .HasMaxLength(26)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Earnings")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("JobPosition")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PESEL")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("PersonID");
+
+                    b.ToTable("Worker");
+                });
+
+            modelBuilder.Entity("TabApp.Models.Worker", b =>
+                {
+                    b.HasOne("TabApp.Models.Person", "Person")
+                        .WithOne("Worker")
+                        .HasForeignKey("TabApp.Models.Worker", "PersonID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Person");
+                });
+
+            modelBuilder.Entity("TabApp.Models.Person", b =>
+                {
+                    b.Navigation("Worker");
                 });
 #pragma warning restore 612, 618
         }
