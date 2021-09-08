@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TabApp.Migrations
 {
     [DbContext(typeof(dbContext))]
-    [Migration("20210904193324_models")]
-    partial class models
+    [Migration("20210908171610_LoginCredentials")]
+    partial class LoginCredentials
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
