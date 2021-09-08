@@ -78,10 +78,16 @@ namespace TabApp.Controllers
             if (ModelState.IsValid)
             {
                 if(itemID != null)
+                {
                     repair.ItemID = itemID;
+                }  
                 else
-                    repair.Item = item;
-                
+                {
+                    _context.Add(item);
+                    await _context.SaveChangesAsync();
+                    repair.ItemID = item.ID;
+                }
+                  
                 _context.Add(repair);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
