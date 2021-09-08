@@ -34,4 +34,6 @@ using TabApp.Models;
         public DbSet<TabApp.Models.Repair> Repair { get; set; }
 
         public DbSet<TabApp.Models.Service> Service { get; set; }
+
+        public DbSet<TabApp.Models.LoginCredentials> LoginCredentials { get; set; }
     }

@@ -33,7 +33,7 @@ namespace TabApp.Models
 
         public virtual Worker Worker { get; set; }
 
-        //public virtual LoginCredentials LoginCredentials { get; set; }
+        public virtual LoginCredentials LoginCredentials { get; set; }
 
         public ICollection<Item> Item { get; set; }
 
