@@ -58,7 +58,7 @@ namespace TabApp.Controllers
                 {
                     return NotFound();
                 }
-                //ViewBag.ItemID = itemID;
+                ViewBag.ItemID = itemID;
                 ViewBag.ItemSerialNumber = item.SerialNumber;
                 ViewBag.ItemDescription = item.Description;
                 
