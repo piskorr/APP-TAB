@@ -49,7 +49,7 @@ namespace TabApp.Controllers
         }
 
         // GET: Repair/Create/itemId
-         public async Task<IActionResult> Create(int? itemID)
+        public async Task<IActionResult> Create(int? itemID)
         {
             if (itemID != null)
             {
@@ -58,7 +58,7 @@ namespace TabApp.Controllers
                 {
                     return NotFound();
                 }
-                ViewBag.ItemID = itemID;
+                //ViewBag.ItemID = itemID;
                 ViewBag.ItemSerialNumber = item.SerialNumber;
                 ViewBag.ItemDescription = item.Description;
                 
@@ -73,18 +73,15 @@ namespace TabApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SerialNumber,Description,AdmissionDate,IssueDate,Cost,Warranty,Status,PickupCode")] Item item, Repair repair, int? itemID)
+        public async Task<IActionResult> Create(int itemID, [Bind("AdmissionDate,IssueDate,Cost,Warranty,Status,PickupCode")] Repair repair, [Bind("SerialNumber,Description")] Item item)
         {
             if (ModelState.IsValid)
             {
                 if(itemID != null)
-                {
-                    repair.Item = null;
-                    //_context.Add(item);
-                    //await _context.SaveChangesAsync();
-                   repair.ItemID = itemID;
-                }
-               
+                    repair.ItemID = itemID;
+                else
+                    repair.Item = item;
+                
                 _context.Add(repair);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

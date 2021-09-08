@@ -6,12 +6,11 @@
 <script>
     
     function myF(){
-        //const queryString = window.location.search;
-        //const urlParams = new URLSearchParams(queryString);
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
 
-        if(@ViewBag.itemID)//urlParams.has('itemID'))
+        if(urlParams.has('itemID'))
         {
-            document.getElementById('itemID').value = '@ViewBag.itemID';
             document.getElementById('ItemSerialNumber').value = '@ViewBag.ItemSerialNumber';
             document.getElementById('ItemDescription').value = '@ViewBag.ItemDescription';
 
@@ -33,7 +32,7 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="All" class="text-danger"></div>
-            <input type="hidden" id="itemID" name="itemID"/>
+            <input type="hidden" asp-for="itemID"/>
             <div class="form-group">
                 <label asp-for="Item.SerialNumber" class="control-label">Item Serial Number</label>
                 <input asp-for="Item.SerialNumber" class="form-control"  id="ItemSerialNumber"/>
