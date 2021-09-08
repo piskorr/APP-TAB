@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
-    <link rel = "icon" href = "~/graphics/logo.png" type = "image/x-icon">
+    <link rel="icon" href="~/graphics/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -14,133 +14,133 @@
     <header>
         <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark" style="padding-left:5%; padding-right:5%;">
 
-    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="font-weight:bold;">
-        <img src="~/graphics/logo.png" width="30" height="30" class="d-inline-block align-top" alt="Logo" />
-        Tab App
-    </a>
-
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-
-    @if ( !User.Identity.IsAuthenticated) {
-        <li class="nav-item">
-            <a class="nav-link" asp-area="" asp-controller="Service" asp-action="Preview"> Services </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link" asp-area="" asp-controller="PriceList" asp-action="Preview"> Prices </a>
-        </li>
-    }
-
-
-    @if ( User.Identity.IsAuthenticated ) {
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Persons
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="font-weight:bold;">
+                <img src="~/graphics/logo.png" width="30" height="30" class="d-inline-block align-top" alt="Logo" />
+                Tab App
             </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" asp-area="" asp-controller="Person" asp-action="Create"> Add Person </a>
-            <a class="dropdown-item" asp-area="" asp-controller="Person" asp-action="Index"> Person list </a>
-            </div>
-        </li>
 
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Workers
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" asp-area="" asp-controller="Worker" asp-action="Create"> Add Worker </a>
-            <a class="dropdown-item" asp-area="" asp-controller="Worker" asp-action="Index"> Workers list </a>
-            </div>
-        </li>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Items
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" asp-area="" asp-controller="Item" asp-action="Create"> Add Item </a>
-            <a class="dropdown-item" asp-area="" asp-controller="Item" asp-action="Index"> Item list </a>
-            </div>
-        </li>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
 
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Repairs
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" asp-area="" asp-controller="Repair" asp-action="Create"> Add Repair </a>
-            <a class="dropdown-item" asp-area="" asp-controller="Repair" asp-action="Index"> Repairs list </a>
-            </div>
-        </li>
+                    @if ( !User.Identity.IsAuthenticated) {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Service" asp-action="Preview"> Services </a>
+                    </li>
 
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Price list
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" asp-area="" asp-controller="PriceList" asp-action="Create"> Add Price </a>
-            <a class="dropdown-item" asp-area="" asp-controller="PriceList" asp-action="Index"> Price list </a>
-            </div>
-        </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="PriceList" asp-action="Preview"> Prices </a>
+                    </li>
+                 }
 
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Services
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" asp-area="" asp-controller="Service" asp-action="Create"> Add Service </a>
-            <a class="dropdown-item" asp-area="" asp-controller="Service" asp-action="Index"> Services list </a>
-            </div>
-        </li>
 
-        
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Invoices
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" asp-area="" asp-controller="Invoice" asp-action="Create"> Add Invoice </a>
-                <a class="dropdown-item" asp-area="" asp-controller="Invoice" asp-action="Index"> Invoices list </a>
+                    @if ( User.Identity.IsAuthenticated ) {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Persons
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" asp-area="" asp-controller="Person" asp-action="Create"> Add Person </a>
+                            <a class="dropdown-item" asp-area="" asp-controller="Person" asp-action="Index"> Person list </a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Workers
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" asp-area="" asp-controller="Worker" asp-action="Create"> Add Worker </a>
+                            <a class="dropdown-item" asp-area="" asp-controller="Worker" asp-action="Index"> Workers list </a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Items
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" asp-area="" asp-controller="Item" asp-action="Create"> Add Item </a>
+                            <a class="dropdown-item" asp-area="" asp-controller="Item" asp-action="Index"> Item list </a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Repairs
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" asp-area="" asp-controller="Repair" asp-action="Create"> Add Repair </a>
+                            <a class="dropdown-item" asp-area="" asp-controller="Repair" asp-action="Index"> Repairs list </a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Price list
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" asp-area="" asp-controller="PriceList" asp-action="Create"> Add Price </a>
+                            <a class="dropdown-item" asp-area="" asp-controller="PriceList" asp-action="Index"> Price list </a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Services
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" asp-area="" asp-controller="Service" asp-action="Create"> Add Service </a>
+                            <a class="dropdown-item" asp-area="" asp-controller="Service" asp-action="Index"> Services list </a>
+                        </div>
+                    </li>
+
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Invoices
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" asp-area="" asp-controller="Invoice" asp-action="Create"> Add Invoice </a>
+                            <a class="dropdown-item" asp-area="" asp-controller="Invoice" asp-action="Index"> Invoices list </a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Messages
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" asp-area="" asp-controller="Message" asp-action="Create"> Add Message </a>
+                            <a class="dropdown-item" asp-area="" asp-controller="Message" asp-action="Index"> Messages list </a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-item nav-link" asp-area="" asp-controller="Profile" asp-action="Index">My profile <span class="sr-only">(current)</span></a>
+                    </li>
+                }
+
+                </ul>
+
+                @if ( !User.Identity.IsAuthenticated ) {
+                <a class="btn btn-outline-success my-2 my-sm-0" asp-area="" asp-controller="Home" asp-action="Login"> Login </a>
+            } else {
+                <div class="nav-item" style="color:rgb(154, 157, 160);">
+                    Logged as
+                    <span style="font-weight:bold; color:white; padding-right:15px;">@User.Identity.Name</span>
                 </div>
-            </li>
+                <a class="btn btn-outline-success my-2 my-sm-0" asp-area="" asp-controller="Home" asp-action="Logout"> Logout </a>
+            }
 
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Messages
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" asp-area="" asp-controller="Message" asp-action="Create"> Add Message </a>
-                <a class="dropdown-item" asp-area="" asp-controller="Message" asp-action="Index"> Messages list </a>
-                </div>
-            </li>
-
-             <li class="nav-item">
-                <a class="nav-item nav-link" asp-area="" asp-controller="Profile" asp-action="Index">My profile <span class="sr-only">(current)</span></a>
-            </li>
-        }     
-        
-        </ul>
-
-        @if ( !User.Identity.IsAuthenticated ) {
-            <a class="btn btn-outline-success my-2 my-sm-0" asp-area="" asp-controller="Home" asp-action="Login"> Login </a>
-        }
-        else {
-    <div class="nav-item" style="color:rgb(154, 157, 160);"> Logged as
-        <span style="font-weight:bold; color:white;">@User.Identity.Name</span>
-    </div>
-    <a class="btn btn-outline-success my-2 my-sm-0" asp-area="" asp-controller="Home" asp-action="Logout"> Logout </a>
-        }
-        
-    </div>
-    </nav>
+            </div>
+        </nav>
     </header>
 
-    <div class="container" style="background-color: white; padding: 20px 30px 30px; margin-top: 15px; box-shadow: 0 8px 6px -6px black;" >
+    <div class="container" style="background-color: white; padding: 20px 30px 30px; margin-top: 15px; box-shadow: 0 8px 6px -6px black;">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
