@@ -11,7 +11,7 @@ using TabApp.Models;
 
 namespace TabApp.Controllers
 {
-    [Authorize(Roles = Roles.Employee)]
+    [Authorize(Policy = Policies.ManagerPolicy)]
     public class PersonController : Controller
     {
         private readonly dbContext _context;

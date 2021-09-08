@@ -23,7 +23,11 @@ namespace TabApp.Models
         public String Address { get; set; }
 
         [DataType(DataType.EmailAddress)]
+        [Required]
         public String Email { get; set; }
+
+        [Required]
+        public String Role { get; set; }
 
         [Display(Name = "Phone Number")]
         [RegularExpression(@"^[0-9]*$")]

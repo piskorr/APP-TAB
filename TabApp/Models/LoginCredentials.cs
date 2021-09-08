@@ -12,17 +12,14 @@ namespace TabApp.Models
         [ForeignKey("Person")]
         public int ID { get; set; }
 
-        [RegularExpression(@"^[A-Z]+[a-zA-Z\s]*$")]
-        [StringLength(30, MinimumLength = 6)]
+        [StringLength(30, MinimumLength = 3)]
         [Required]
         public String UserName { get; set; }
 
-        [RegularExpression(@"^[A-Z]+[a-zA-Z\s]*$")]
-        [StringLength(30, MinimumLength = 6)]
+        [StringLength(30, MinimumLength = 3)]
         [Required]
         public String Password { get; set; }
 
-        
         public virtual Person Person { get; set; }
     }
 }
