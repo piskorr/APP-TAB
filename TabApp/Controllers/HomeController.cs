@@ -81,6 +81,11 @@ namespace TabApp.Controllers
             return View();
         }
 
+        public IActionResult Profile()
+        {
+            return View();
+        }
+
         [HttpGet("denied")]
         public IActionResult Denied()
         {
