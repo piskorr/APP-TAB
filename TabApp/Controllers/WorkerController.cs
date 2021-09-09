@@ -60,7 +60,6 @@ namespace TabApp.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 _context.Add(person);
                 await _context.SaveChangesAsync();
                 worker.PersonID = person.ID;
@@ -71,6 +70,32 @@ namespace TabApp.Controllers
             }
             ViewData["PersonID"] = new SelectList(_context.Person, "ID", "Address", worker.PersonID);
             return View(worker);
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register([Bind("Earnings,PESEL,AccountNumber,JobPosition,PersonID,Name,Surname,Address,Email,PhoneNumber,ID,UserName,Password")]
+                                                    Worker worker, Person person, LoginCredentials loginCredentials)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(person);
+                await _context.SaveChangesAsync();
+                worker.PersonID = person.ID;
+                loginCredentials.ID = person.ID;
+                _context.Add(worker);
+                _context.Add(loginCredentials);
+                await _context.SaveChangesAsync();
+
+                return Redirect("/");
+            }
+            return View();
         }
 
         // GET: Worker/Edit/5
