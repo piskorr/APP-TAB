@@ -69,7 +69,6 @@ namespace TabApp.Migrations
                     b.ToTable("Item");
                 });
 
-<<<<<<< HEAD
             modelBuilder.Entity("TabApp.Models.LoginCredentials", b =>
                 {
                     b.Property<int>("ID")
@@ -90,8 +89,6 @@ namespace TabApp.Migrations
                     b.ToTable("LoginCredentials");
                 });
 
-=======
->>>>>>> origin/lukboso
             modelBuilder.Entity("TabApp.Models.Message", b =>
                 {
                     b.Property<int>("ID")
@@ -212,12 +209,8 @@ namespace TabApp.Migrations
 
             modelBuilder.Entity("TabApp.Models.Service", b =>
                 {
-<<<<<<< HEAD
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-=======
-                    b.Property<int>("PersonID")
->>>>>>> origin/lukboso
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("PersonID")
@@ -295,7 +288,6 @@ namespace TabApp.Migrations
                     b.Navigation("Person");
                 });
 
-<<<<<<< HEAD
             modelBuilder.Entity("TabApp.Models.LoginCredentials", b =>
                 {
                     b.HasOne("TabApp.Models.Person", "Person")
@@ -307,8 +299,6 @@ namespace TabApp.Migrations
                     b.Navigation("Person");
                 });
 
-=======
->>>>>>> origin/lukboso
             modelBuilder.Entity("TabApp.Models.Message", b =>
                 {
                     b.HasOne("TabApp.Models.Person", "Addressee")
@@ -378,11 +368,8 @@ namespace TabApp.Migrations
 
                     b.Navigation("Item");
 
-<<<<<<< HEAD
                     b.Navigation("LoginCredentials");
 
-=======
->>>>>>> origin/lukboso
                     b.Navigation("ReciveMessage");
 
                     b.Navigation("SendMessage");

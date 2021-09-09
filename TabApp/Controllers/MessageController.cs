@@ -7,16 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TabApp.Enums;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-
 using TabApp.Models;
 
 namespace TabApp.Controllers
 {
     [Authorize(Roles = Roles.User)]
-
     public class MessageController : Controller
     {
         private readonly dbContext _context;

@@ -1,17 +1,10 @@
 @model IEnumerable<TabApp.Models.Item>
 
 @{
-<<<<<<< HEAD
     ViewData["Title"] = "Items";
 }
 
 <h1>Items</h1>
-=======
-    ViewData["Title"] = "Index";
-}
-
-<h1>Index</h1>
->>>>>>> origin/lukboso
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -41,10 +34,6 @@
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-<<<<<<< HEAD
-=======
-                <a asp-controller="Repair" asp-action="Create" asp-route-itemID="@item.ID">Add repair</a>
->>>>>>> origin/lukboso
             </td>
         </tr>
 }

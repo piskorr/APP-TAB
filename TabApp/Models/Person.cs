@@ -37,14 +37,7 @@ namespace TabApp.Models
 
         public virtual Worker Worker { get; set; }
 
-<<<<<<< HEAD
         public virtual LoginCredentials LoginCredentials { get; set; }
-=======
-        public ICollection<Item> Item { get; set; }
-
-
-        public ICollection<Message> SendMessage { get; set; }
->>>>>>> origin/lukboso
 
         public ICollection<Item> Item { get; set; }
 
@@ -57,14 +50,4 @@ namespace TabApp.Models
         public ICollection<Service> Service { get; set; }
     }
 
-<<<<<<< HEAD
-=======
-        public ICollection<Message> ReciveMessage { get; set; }
-
-        public ICollection<Invoice> Invoice { get; set; }
-
-        public ICollection<Service> Service { get; set; }
-    }
-
->>>>>>> origin/lukboso
 }

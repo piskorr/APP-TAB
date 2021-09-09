@@ -42,7 +42,6 @@ namespace TabApp.Controllers
             return View(invoice);
         }
 
-
         public async Task<IActionResult> Generate(int? id)
         {
             if (id == null)
@@ -59,7 +58,6 @@ namespace TabApp.Controllers
 
             return View(invoice);
         }
-
 
         // GET: Invoice/Create
         public IActionResult Create()
