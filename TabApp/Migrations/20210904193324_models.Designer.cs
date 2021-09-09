@@ -2,14 +2,16 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace TabApp.Migrations
 {
     [DbContext(typeof(dbContext))]
-    partial class dbContextModelSnapshot : ModelSnapshot
+    [Migration("20210904193324_models")]
+    partial class models
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,29 +71,6 @@ namespace TabApp.Migrations
                     b.ToTable("Item");
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("TabApp.Models.LoginCredentials", b =>
-                {
-                    b.Property<int>("ID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("LoginCredentials");
-                });
-
-=======
->>>>>>> origin/lukboso
             modelBuilder.Entity("TabApp.Models.Message", b =>
                 {
                     b.Property<int>("ID")
@@ -131,7 +110,6 @@ namespace TabApp.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -142,10 +120,6 @@ namespace TabApp.Migrations
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(9)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Surname")
@@ -212,12 +186,8 @@ namespace TabApp.Migrations
 
             modelBuilder.Entity("TabApp.Models.Service", b =>
                 {
-<<<<<<< HEAD
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-=======
-                    b.Property<int>("PersonID")
->>>>>>> origin/lukboso
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("PersonID")
@@ -295,20 +265,6 @@ namespace TabApp.Migrations
                     b.Navigation("Person");
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("TabApp.Models.LoginCredentials", b =>
-                {
-                    b.HasOne("TabApp.Models.Person", "Person")
-                        .WithOne("LoginCredentials")
-                        .HasForeignKey("TabApp.Models.LoginCredentials", "ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Person");
-                });
-
-=======
->>>>>>> origin/lukboso
             modelBuilder.Entity("TabApp.Models.Message", b =>
                 {
                     b.HasOne("TabApp.Models.Person", "Addressee")
@@ -378,11 +334,6 @@ namespace TabApp.Migrations
 
                     b.Navigation("Item");
 
-<<<<<<< HEAD
-                    b.Navigation("LoginCredentials");
-
-=======
->>>>>>> origin/lukboso
                     b.Navigation("ReciveMessage");
 
                     b.Navigation("SendMessage");

@@ -23,7 +23,15 @@ namespace TabApp
 
 
         // This method gets called by the runtime. Use this method to add services to the container.
+<<<<<<< HEAD
         public void ConfigureServices(IServiceCollection services)
+=======
+        public void ConfigureServices(IServiceCollection services)    {
+
+        services.AddControllersWithViews();
+
+        services.AddDbContext<dbContext>(options =>
+>>>>>>> origin/lukboso
         {
 
             services.AddControllersWithViews();
@@ -49,6 +57,7 @@ namespace TabApp
                     });
             services.AddAuthorization(options =>
             {
+<<<<<<< HEAD
                 options.AddPolicy(Policies.EmployeePolicy, policy =>
                     policy.RequireRole(Roles.Employee, Roles.Manager, Roles.Admin));
                 options.AddPolicy(Policies.ManagerPolicy, policy =>
@@ -57,6 +66,13 @@ namespace TabApp
         }
 
 
+=======
+                options.UseSqlServer(connectionString);
+            }
+            
+        });
+    }
+>>>>>>> origin/lukboso
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

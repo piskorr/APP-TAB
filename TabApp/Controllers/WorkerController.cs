@@ -72,6 +72,7 @@ namespace TabApp.Controllers
             return View(worker);
         }
 
+
         [HttpGet]
         public IActionResult Register()
         {
@@ -97,6 +98,7 @@ namespace TabApp.Controllers
             }
             return View();
         }
+
 
         // GET: Worker/Edit/5
         public async Task<IActionResult> Edit(int? id)

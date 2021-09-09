@@ -44,10 +44,28 @@ namespace TabApp.Controllers
             return View(repair);
         }
 
-        // GET: Repair/Create
-        public IActionResult Create()
+        public IActionResult Add()
         {
-            ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description");
+            return View();
+        }
+
+        // GET: Repair/Create/itemId
+        public async Task<IActionResult> Create(int? itemID)
+        {
+            if (itemID != null)
+            {
+                var item = await _context.Item.FindAsync(itemID);
+                if (item == null)
+                {
+                    return NotFound();
+                }
+                ViewBag.ItemID = itemID;
+                ViewBag.ItemSerialNumber = item.SerialNumber;
+                ViewBag.ItemDescription = item.Description;
+                
+            }
+
+            //ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description");
             return View();
         }
 
@@ -56,15 +74,25 @@ namespace TabApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,AdmissionDate,IssueDate,Cost,Warranty,Status,PickupCode,ItemID")] Repair repair)
+        public async Task<IActionResult> Create(int? itemID, [Bind("AdmissionDate,IssueDate,Cost,Warranty,Status,PickupCode")] Repair repair, [Bind("SerialNumber,Description")] Item item)
         {
             if (ModelState.IsValid)
             {
+                if(itemID != null)
+                {
+                    repair.ItemID = itemID;
+                }  
+                else
+                {
+                    _context.Add(item);
+                    await _context.SaveChangesAsync();
+                    repair.ItemID = item.ID;
+                }
+                  
                 _context.Add(repair);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description", repair.ItemID);
             return View(repair);
         }
 
