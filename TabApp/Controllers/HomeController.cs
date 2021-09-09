@@ -91,6 +91,7 @@ namespace TabApp.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([Bind("ID,UserName,Password,Name,Surname,Address,Email,PhoneNumber")] LoginCredentials loginCredentials, Person person)
         {
+            //role 
             if (ModelState.IsValid)
             {
                 var email = await _context.Person
@@ -107,7 +108,7 @@ namespace TabApp.Controllers
 
                 if (email != null)
                 {
-                    TempData["Error"] = "email is taken!";
+                    TempData["Error"] = "Email is taken!";
                     return View();
                 }
 
