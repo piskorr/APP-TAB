@@ -42,11 +42,6 @@ namespace TabApp.Controllers
             return View(service);
         }
 
-         public async Task<IActionResult> Preview()
-        {
-            return View(await _context.Service.ToListAsync());
-        }
-
         // GET: Service/Create
         public IActionResult Create()
         {
