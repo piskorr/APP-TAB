@@ -6,10 +6,7 @@
 <script>
     
     function myF(){
-        //const queryString = window.location.search;
-       // const urlParams = new URLSearchParams(queryString);
-
-        if(@ViewBag.ItemID)//urlParams.has('itemID')
+        if(@ViewBag.ItemID)
         {
             document.getElementById('itemID').value = '@ViewBag.ItemID';
             document.getElementById('ItemSerialNumber').value = '@ViewBag.ItemSerialNumber';
@@ -17,12 +14,11 @@
             document.getElementById('ItemSerialNumber').setAttribute("readonly", true);
             document.getElementById('ItemDescription').setAttribute("readonly", true);
         }
-        else{ alert('hui');}
+       
     }
     
      window.onload = myF;
 </script>
-
 
 <h1>Create</h1>
 
@@ -62,10 +58,6 @@
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Warranty" /> @Html.DisplayNameFor(model => model.Warranty)
                 </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="ItemID" class="control-label"></label>
-                <select asp-for="ItemID" class ="form-control" asp-items="ViewBag.ItemID"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

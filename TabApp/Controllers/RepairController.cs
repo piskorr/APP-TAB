@@ -61,20 +61,23 @@ namespace TabApp.Controllers
                 ViewBag.ItemID = itemID;
                 ViewBag.ItemSerialNumber = item.SerialNumber;
                 ViewBag.ItemDescription = item.Description;
-                
             }
 
-            //ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description");
-            ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description");
+           //ViewData["StatusList"] = new SelectList(_context.RepairStatus, "ID", "Status");
             return View();
         }
+
+  public int ID { get; set; }
+
+        public string Status { get; set; }
 
         // POST: Repair/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int? itemID, [Bind("AdmissionDate,IssueDate,Cost,Warranty,Status,PickupCode")] Repair repair, [Bind("SerialNumber,Description")] Item item)
+        public async Task<IActionResult> Create(int? itemID, [Bind("AdmissionDate,IssueDate,Cost,Warranty")] Repair repair, 
+        [Bind("SerialNumber,Description")] Item item)
         {
             if (ModelState.IsValid)
             {
@@ -88,12 +91,19 @@ namespace TabApp.Controllers
                     await _context.SaveChangesAsync();
                     repair.ItemID = item.ID;
                 }
-                  
+
+                var repairStatus = await _context.RepairStatus.FindAsync(1);
+                repair.RepairStatus = repairStatus;
+
                 _context.Add(repair);
                 await _context.SaveChangesAsync();
+
+                var pickupCode = await _context.PickupCodes.FindAsync(repair.ID);
+                repair.PickupCode = pickupCode;
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description", repair.ItemID);
             return View(repair);
         }
 

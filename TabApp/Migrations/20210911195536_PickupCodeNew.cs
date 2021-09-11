@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TabApp.Migrations
 {
-    public partial class models : Migration
+    public partial class PickupCodeNew : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,7 +16,8 @@ namespace TabApp.Migrations
                     Name = table.Column<string>(type: "TEXT", maxLength: 30, nullable: false),
                     Surname = table.Column<string>(type: "TEXT", maxLength: 30, nullable: false),
                     Address = table.Column<string>(type: "TEXT", maxLength: 60, nullable: false),
-                    Email = table.Column<string>(type: "TEXT", nullable: true),
+                    Email = table.Column<string>(type: "TEXT", nullable: false),
+                    Role = table.Column<string>(type: "TEXT", nullable: false),
                     PhoneNumber = table.Column<string>(type: "TEXT", maxLength: 9, nullable: false)
                 },
                 constraints: table =>
@@ -39,6 +40,19 @@ namespace TabApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RepairStatus",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Status = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RepairStatus", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Item",
                 columns: table => new
                 {
@@ -57,6 +71,25 @@ namespace TabApp.Migrations
                         principalTable: "Person",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LoginCredentials",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserName = table.Column<string>(type: "TEXT", maxLength: 30, nullable: false),
+                    Password = table.Column<string>(type: "TEXT", maxLength: 30, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LoginCredentials", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_LoginCredentials_Person_ID",
+                        column: x => x.ID,
+                        principalTable: "Person",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -118,9 +151,8 @@ namespace TabApp.Migrations
                     IssueDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Cost = table.Column<int>(type: "INTEGER", nullable: false),
                     Warranty = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Status = table.Column<string>(type: "TEXT", nullable: true),
-                    PickupCode = table.Column<ulong>(type: "INTEGER", nullable: false),
-                    ItemID = table.Column<int>(type: "INTEGER", nullable: false)
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: false),
+                    RepairStatusID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -131,6 +163,12 @@ namespace TabApp.Migrations
                         principalTable: "Item",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Repair_RepairStatus_RepairStatusID",
+                        column: x => x.RepairStatusID,
+                        principalTable: "RepairStatus",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -159,6 +197,24 @@ namespace TabApp.Migrations
                         principalTable: "Repair",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PickupCodes",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false),
+                    Value = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PickupCodes", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_PickupCodes_Repair_ID",
+                        column: x => x.ID,
+                        principalTable: "Repair",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -227,6 +283,11 @@ namespace TabApp.Migrations
                 column: "ItemID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Repair_RepairStatusID",
+                table: "Repair",
+                column: "RepairStatusID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Service_PersonID",
                 table: "Service",
                 column: "PersonID");
@@ -248,7 +309,13 @@ namespace TabApp.Migrations
                 name: "Invoice");
 
             migrationBuilder.DropTable(
+                name: "LoginCredentials");
+
+            migrationBuilder.DropTable(
                 name: "Message");
+
+            migrationBuilder.DropTable(
+                name: "PickupCodes");
 
             migrationBuilder.DropTable(
                 name: "Service");
@@ -264,6 +331,9 @@ namespace TabApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "Item");
+
+            migrationBuilder.DropTable(
+                name: "RepairStatus");
 
             migrationBuilder.DropTable(
                 name: "Person");

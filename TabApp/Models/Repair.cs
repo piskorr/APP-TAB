@@ -26,8 +26,8 @@ namespace TabApp.Models
 
         public Invoice Invoice { get; set; }
 
-        public virtual RepairStatus Status { get; set; }
-
+        public virtual RepairStatus RepairStatus { get; set; }
+       
         public virtual PickupCode PickupCode { get; set; }
 
         public ICollection<Service> Service { get; set; }
