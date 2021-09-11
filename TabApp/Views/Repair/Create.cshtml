@@ -3,6 +3,26 @@
 @{
     ViewData["Title"] = "Create";
 }
+<script>
+    
+    function myF(){
+        //const queryString = window.location.search;
+       // const urlParams = new URLSearchParams(queryString);
+
+        if(@ViewBag.ItemID)//urlParams.has('itemID')
+        {
+            document.getElementById('itemID').value = '@ViewBag.ItemID';
+            document.getElementById('ItemSerialNumber').value = '@ViewBag.ItemSerialNumber';
+            document.getElementById('ItemDescription').value = '@ViewBag.ItemDescription';
+            document.getElementById('ItemSerialNumber').setAttribute("readonly", true);
+            document.getElementById('ItemDescription').setAttribute("readonly", true);
+        }
+        else{ alert('hui');}
+    }
+    
+     window.onload = myF;
+</script>
+
 
 <h1>Create</h1>
 
@@ -11,7 +31,18 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" id="itemID" name="itemID"/>
+            <div class="form-group">
+                <label asp-for="Item.SerialNumber" class="control-label">Item Serial Number</label>
+                <input asp-for="Item.SerialNumber" class="form-control"  id="ItemSerialNumber"/>
+                <span asp-validation-for="Item.SerialNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Item.Description" class="control-label">Item Description</label>
+                <input asp-for="Item.Description" class="form-control" id="ItemDescription"/>
+                <span asp-validation-for="Item.Description" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="AdmissionDate" class="control-label"></label>
                 <input asp-for="AdmissionDate" class="form-control" />
@@ -52,6 +83,7 @@
         </form>
     </div>
 </div>
+
 
 <div>
     <a asp-action="Index">Back to List</a>
