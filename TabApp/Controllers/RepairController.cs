@@ -117,15 +117,13 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
-            var repair = await _context.Repair
-            .Include(r => r.RepairStatus)
-            .FirstOrDefaultAsync(m => m.ID == id);
+            var repair = await _context.Repair.FindAsync(id);
 
             if (repair == null)
             {
                 return NotFound();
             }
-            ViewData["RepairStatus"] = new SelectList(_context.RepairStatus, "ID", "Status", repair.RepairStatus.ID);
+            ViewData["RepairStatus"] = new SelectList(_context.RepairStatus, "ID", "Status");
             return View(repair);
         }
 
@@ -161,7 +159,7 @@ namespace TabApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RepairStatus"] = new SelectList(_context.RepairStatus, "ID", "Status", repair.RepairStatus.ID);
+            ViewData["RepairStatus"] = new SelectList(_context.RepairStatus, "ID", "Status");
             //ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description", repair.ItemID);
             return View(repair);
         }
