@@ -26,6 +26,19 @@ namespace TabApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PickupCodes",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Value = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PickupCodes", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PriceList",
                 columns: table => new
                 {
@@ -152,7 +165,8 @@ namespace TabApp.Migrations
                     Cost = table.Column<int>(type: "INTEGER", nullable: false),
                     Warranty = table.Column<bool>(type: "INTEGER", nullable: false),
                     ItemID = table.Column<int>(type: "INTEGER", nullable: false),
-                    RepairStatusID = table.Column<int>(type: "INTEGER", nullable: true)
+                    RepairStatusID = table.Column<int>(type: "INTEGER", nullable: true),
+                    PickupCodeID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -163,6 +177,12 @@ namespace TabApp.Migrations
                         principalTable: "Item",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Repair_PickupCodes_PickupCodeID",
+                        column: x => x.PickupCodeID,
+                        principalTable: "PickupCodes",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Repair_RepairStatus_RepairStatusID",
                         column: x => x.RepairStatusID,
@@ -197,24 +217,6 @@ namespace TabApp.Migrations
                         principalTable: "Repair",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PickupCodes",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false),
-                    Value = table.Column<string>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PickupCodes", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_PickupCodes_Repair_ID",
-                        column: x => x.ID,
-                        principalTable: "Repair",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -283,6 +285,12 @@ namespace TabApp.Migrations
                 column: "ItemID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Repair_PickupCodeID",
+                table: "Repair",
+                column: "PickupCodeID",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Repair_RepairStatusID",
                 table: "Repair",
                 column: "RepairStatusID");
@@ -315,9 +323,6 @@ namespace TabApp.Migrations
                 name: "Message");
 
             migrationBuilder.DropTable(
-                name: "PickupCodes");
-
-            migrationBuilder.DropTable(
                 name: "Service");
 
             migrationBuilder.DropTable(
@@ -331,6 +336,9 @@ namespace TabApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "Item");
+
+            migrationBuilder.DropTable(
+                name: "PickupCodes");
 
             migrationBuilder.DropTable(
                 name: "RepairStatus");

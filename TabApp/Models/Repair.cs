@@ -28,6 +28,7 @@ namespace TabApp.Models
 
         public virtual RepairStatus RepairStatus { get; set; }
        
+        [ForeignKey("PickupCodeID")]
         public virtual PickupCode PickupCode { get; set; }
 
         public ICollection<Service> Service { get; set; }
