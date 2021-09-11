@@ -51,8 +51,6 @@ namespace TabApp.Controllers
                 .Include(l => l.Person)
                 .FirstOrDefaultAsync(l => l.UserName.Equals(username) && l.Password.Equals(password));
 
-            
-
             if (login != null)
             {
                 var claims = new List<Claim>();
@@ -91,7 +89,7 @@ namespace TabApp.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([Bind("ID,UserName,Password,Name,Surname,Address,Email,PhoneNumber")] LoginCredentials loginCredentials, Person person)
         {
-            //role 
+            
             if (ModelState.IsValid)
             {
                 var email = await _context.Person
