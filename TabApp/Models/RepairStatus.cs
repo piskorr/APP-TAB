@@ -10,5 +10,7 @@ namespace TabApp.Models
         public int ID { get; set; }
 
         public string Status { get; set; }
+
+        public ICollection<Repair> Repair { get; set; }
     }
 }

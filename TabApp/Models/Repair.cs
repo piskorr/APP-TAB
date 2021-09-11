@@ -18,17 +18,17 @@ namespace TabApp.Models
         [DataType(DataType.Currency)]
         public int Cost { get; set; }
 
-        public bool Warranty {get; set;}
-
-        public RepairStatus Status {get; set;}
-
-        public PickupCode PickupCode {get; set;}
+        public bool Warranty {get; set;}      
 
         public int? ItemID { get; set; }
 
         public Item Item { get; set; }
 
         public Invoice Invoice { get; set; }
+
+        public virtual RepairStatus Status { get; set; }
+
+        public virtual PickupCode PickupCode { get; set; }
 
         public ICollection<Service> Service { get; set; }
 
