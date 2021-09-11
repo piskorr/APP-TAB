@@ -8,10 +8,11 @@ namespace TabApp.Models
 {
     public class PickupCode
     {
+        [ForeignKey("Repair")]
         public int ID { get; set; }
 
         public string Value { get; set; }
 
-        public virtual Person Person { get; set; }
+        public virtual Repair Repair { get; set; }
     }
 }

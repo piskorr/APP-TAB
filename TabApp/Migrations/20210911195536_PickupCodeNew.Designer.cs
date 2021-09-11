@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TabApp.Migrations
 {
     [DbContext(typeof(dbContext))]
-    [Migration("20210908175107_LoginCredentials4")]
-    partial class LoginCredentials4
+    [Migration("20210911195536_PickupCodeNew")]
+    partial class PickupCodeNew
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -130,6 +130,7 @@ namespace TabApp.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -142,6 +143,10 @@ namespace TabApp.Migrations
                         .HasMaxLength(9)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -150,6 +155,19 @@ namespace TabApp.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Person");
+                });
+
+            modelBuilder.Entity("TabApp.Models.PickupCode", b =>
+                {
+                    b.Property<int>("ID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("PickupCodes");
                 });
 
             modelBuilder.Entity("TabApp.Models.PriceList", b =>
@@ -188,11 +206,8 @@ namespace TabApp.Migrations
                         .IsRequired()
                         .HasColumnType("INTEGER");
 
-                    b.Property<ulong>("PickupCode")
+                    b.Property<int?>("RepairStatusID")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("TEXT");
 
                     b.Property<bool>("Warranty")
                         .HasColumnType("INTEGER");
@@ -201,7 +216,23 @@ namespace TabApp.Migrations
 
                     b.HasIndex("ItemID");
 
+                    b.HasIndex("RepairStatusID");
+
                     b.ToTable("Repair");
+                });
+
+            modelBuilder.Entity("TabApp.Models.RepairStatus", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("RepairStatus");
                 });
 
             modelBuilder.Entity("TabApp.Models.Service", b =>
@@ -311,6 +342,17 @@ namespace TabApp.Migrations
                     b.Navigation("Sender");
                 });
 
+            modelBuilder.Entity("TabApp.Models.PickupCode", b =>
+                {
+                    b.HasOne("TabApp.Models.Repair", "Repair")
+                        .WithOne("PickupCode")
+                        .HasForeignKey("TabApp.Models.PickupCode", "ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Repair");
+                });
+
             modelBuilder.Entity("TabApp.Models.Repair", b =>
                 {
                     b.HasOne("TabApp.Models.Item", "Item")
@@ -319,7 +361,13 @@ namespace TabApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TabApp.Models.RepairStatus", "RepairStatus")
+                        .WithMany("Repair")
+                        .HasForeignKey("RepairStatusID");
+
                     b.Navigation("Item");
+
+                    b.Navigation("RepairStatus");
                 });
 
             modelBuilder.Entity("TabApp.Models.Service", b =>
@@ -385,7 +433,14 @@ namespace TabApp.Migrations
                 {
                     b.Navigation("Invoice");
 
+                    b.Navigation("PickupCode");
+
                     b.Navigation("Service");
+                });
+
+            modelBuilder.Entity("TabApp.Models.RepairStatus", b =>
+                {
+                    b.Navigation("Repair");
                 });
 #pragma warning restore 612, 618
         }
