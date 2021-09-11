@@ -35,7 +35,7 @@ namespace TabApp.Controllers
             return View();
         }
 
-        public IActionResult Preview()
+        public IActionResult Services()
         {
             return View();
         }
@@ -129,11 +129,6 @@ namespace TabApp.Controllers
         }
 
         public IActionResult ForgotPassword()
-        {
-            return View();
-        }
-
-        public IActionResult Profile()
         {
             return View();
         }

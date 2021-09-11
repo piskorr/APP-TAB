@@ -5,42 +5,46 @@
 }
 
 <div class="container">
-    <div class="row justify-content-center align-items-center">
-        <div class="col-4">
-            <div class="card" style="background-color:rgb(52,58,64); box-shadow: 0 8px 6px -6px black; margin-top:30px; margin-bottom:30px;">
-                <div class="card-body">
-                    @if(!string.IsNullOrEmpty(error))
-                    {
-                        <h1 class="alert-danger" style="padding:20px;">@error</h1>
-                    }
-                    <form action="/login?ReturnUrl=@System.Net.WebUtility.UrlEncode(returnUrl)" autocomplete="off" method="POST">
 
-                        <h5 style="color:white; text-decoration:bold;"> Login </h5>
+    <div id="loginErrorCode">
+        @if(!string.IsNullOrEmpty(error)) {
+            <h4 class="alert-danger" style="padding:20px; text-align:center;">@error</h4>
+        }
+    </div>
+       
+        <div class="row justify-content-center align-items-center">
+            <div class="col-4">
+                <div class="card" style="background-color:rgb(52,58,64); box-shadow: 0 8px 6px -6px black; margin-top:30px; margin-bottom:30px;">
+                    <div class="card-body">
 
-                        <br />
+                        <form action="/login?ReturnUrl=@System.Net.WebUtility.UrlEncode(returnUrl)" autocomplete="off" method="POST">
 
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="username" placeholder="Login">
-                            <span class="text-danger"></span>
-                        </div>
+                            <h5 style="color:white; text-decoration:bold;"> Login </h5>
 
-                        <div class="form-group">
-                            <input type="password" class="form-control" name="password" placeholder="Password">
-                            <span class="text-danger"></span>
-                        </div>
+                            <br />
 
-                        <button type="submit" class="btn btn-outline-success my-2 my-sm-0"> Login </button>
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="username" placeholder="Login">
+                                <span class="text-danger"></span>
+                            </div>
 
-                        <a class="underlineHover" asp-area="" asp-controller="Home" asp-action="ForgotPassword" style="color:rgb(154,157,160);"> Forgot Password? </a>
+                            <div class="form-group">
+                                <input type="password" class="form-control" name="password" placeholder="Password">
+                                <span class="text-danger"></span>
+                            </div>
 
-                        <br />
-                        <br />
+                            <button type="submit" class="btn btn-outline-success my-2 my-sm-0"> Login </button>
 
-                        <span style="color:rgb(154,157,160);"> Don't have an account? </span>
-                        <a class="underlineHover" asp-area="" asp-controller="Home" asp-action="Register" style="color:white;"> Create one! </a>
-                    </form>
+                            <a class="underlineHover" asp-area="" asp-controller="Home" asp-action="ForgotPassword" style="color:rgb(154,157,160);"> Forgot Password? </a>
+
+                            <br />
+                            <br />
+
+                            <span style="color:rgb(154,157,160);"> Don't have an account? </span>
+                            <a class="underlineHover" asp-area="" asp-controller="Home" asp-action="Register" style="color:white;"> Create one! </a>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>

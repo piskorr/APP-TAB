@@ -1,0 +1,49 @@
+@model IEnumerable<TabApp.Models.Message>
+
+@{
+    ViewData["Title"] = "Mailbox";
+}
+
+<h1>Message trzeba dodać przycisk do powrotu</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                From
+            </th>
+            <th>
+                Title
+            </th>
+            <th>
+                Content
+            </th>
+            <th>
+                Date
+            </th>
+        </tr>
+    </thead>
+    
+    <tbody>
+@foreach (var message in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelMessage => message.Sender.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelMessage => message.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelMessage => message.Content)
+            </td>
+            <td>
+                @Html.DisplayFor(modelMessage => message.Date)
+            </td>
+            <td>
+                <a asp-action="Reply" asp-route-id="@message.ID">Reply</a> |
+                <a asp-action="Delete" asp-route-id="@message.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
