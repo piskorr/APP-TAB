@@ -4,153 +4,169 @@
     ViewData["Title"] = "Generate";
 }
 
-<div id="logo">
-    <img src="~/graphics/logo.png" width="30" height="30" class="d-inline-block align-top" alt="Logo" style="float:left; margin-right:10px;"/>
-    <h3>Faktura nr @Html.DisplayFor(model => model.ID)</h3> 
-</div>
+<div id="container" style="margin: 0mm;">
 
-<div id="place" style="align:right;">
     <table>
         <tr>
-            <th> Data wystawienia </th>
-            <td> @Html.DisplayFor(model => model.InvoiceDate) </td>
+            <td>
+                <div id="logo">
+                    <img src="~/graphics/logo.png" width="30" height="30" class="d-inline-block align-top" alt="Logo" style="float:left; margin-right:10px;" />
+                    <h3 style="float:left;">Faktura nr @Html.DisplayFor(model => model.ID)</h3>
+                    <button class="btn btn-outline-success my-2 my-sm-0 d-print-none text-right" style="float:right;" onclick="window.print();return false;">
+                        Print
+                    </button>
+                </div>
+            </td>
         </tr>
         <tr>
-            <th> Miejsce wystawienia </th>
-            <td> ** pleceholder ** </td>
+            <td>
+                <div id="place">
+                    <table>
+                        <tr>
+                            <th> Data wystawienia </th>
+                            <td> @Html.DisplayFor(model => model.InvoiceDate) </td>
+                        </tr>
+                        <tr>
+                            <th> Miejsce wystawienia </th>
+                            <td> ** pleceholder ** </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
         </tr>
     </table>
-</div>
 
+    <hr />
 
-
-<hr />
-
-<div id="sender" style="width: 50%; float:left;"> 
-    <h5>Sprzedawca</h5>
-    <table>
-        <tr>
-            <td> ** nazwa ** </td>
-        </tr>
-        <tr>
-            <td> ** adres1 ** </td>
-        </tr>
-        <tr>
-            <td> ** adres2 ** </td>
-        </tr>
-        <tr>
-            <td> ** nip ** </td>
-        </tr>
-        <tr>
-            <td> ** tel ** </td>
-        </tr>
-    </table>
-</div>
-
-<div id="receiver" style="width: 50%; float:right; "> 
-    <h5>Nabywca</h5>
-    <table >
-        <tr>
-            <td> ** nazwa ** </td>
-        </tr>
-        <tr>
-            <td> ** adres1 ** </td>
-        </tr>
-        <tr>
-            <td> ** adres2 ** </td>
-        </tr>
-        <tr>
-            <td> @Html.DisplayFor(model => model.NIP) </td>
-        </tr>
-        <tr>
-            <td> ** tel ** </td>
-        </tr>
-    </table>
-</div>
-
-<br />
-
-<div id="services" style="margin-top:25px;">
-    <table style="width:100%;">
-        <tr style="text-decoration:underline;">
-            <th>No.</th>
-            <th>Name </th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th>Tax</th>
-            <th>Final Price</th>
-        </tr>
-        <tr>
-            <td>1</td>
-            <td>test </td>
-            <td>3</td>
-            <td>12</td>
-            <td>3%</td>
-            <td>12.2</td>
-        </tr>
-    </table>
-</div>
-
-<div style="margin-top:15px;">
-    <div id="paymentMethod" style="width:50%; float:left;">
-        <table style="width:100%;">
+    <div id="sender" style="width: 50%; float:left;">
+        <h5>Sprzedawca</h5>
+        <table>
             <tr>
-                <th>Payment Method</th>
-                <td>1</td>
+                <td> ** nazwa ** </td>
             </tr>
             <tr>
-                <th>Payment Date</th>
-                <td>2</td>
+                <td> ** adres1 ** </td>
             </tr>
             <tr>
-                <th>Account number</th>
-                <td>3</td>
+                <td> ** adres2 ** </td>
+            </tr>
+            <tr>
+                <td> ** nip ** </td>
+            </tr>
+            <tr>
+                <td> ** tel ** </td>
             </tr>
         </table>
     </div>
 
-    <div id="summary" style="width:50%; float:right;">
-        <table style="width:100%;">
+    <div id="receiver" style="width: 50%; float:right; ">
+        <h5>Nabywca</h5>
+        <table>
             <tr>
+                <td> ** nazwa ** </td>
+            </tr>
+            <tr>
+                <td> ** adres1 ** </td>
+            </tr>
+            <tr>
+                <td> ** adres2 ** </td>
+            </tr>
+            <tr>
+                <td> @Html.DisplayFor(model => model.NIP) </td>
+            </tr>
+            <tr>
+                <td> ** tel ** </td>
+            </tr>
+        </table>
+    </div>
+
+    <br />
+
+    <div id="services" style="margin-top:25px;">
+        <table style="width:100%;">
+            <tr style="text-decoration:underline;">
+                <th>No.</th>
+                <th>Name </th>
+                <th>Quantity</th>
                 <th>Price</th>
-                <td>1</td>
-            </tr>
-            <tr>
                 <th>Tax</th>
-                <td>2</td>
+                <th>Final Price</th>
             </tr>
             <tr>
-                <th>Sum</th>
+                <td>1</td>
+                <td>test </td>
                 <td>3</td>
-            </tr>
-            <tr>
-                <th>Price text</th>
-                <td>trzy</td>
-            </tr>
-        </table>
-    </div>
-</div>
-
-<div id="signatures" style="margin-top:300px;">
-    <div id="sign1" style="width:50%; float:left;">
-        <table style="width:90%;">
-            <tr style="border-bottom-style: solid;"">
-                <td></td>
-            </tr>
-            <tr>
-                <td>the signature of the issuer</td>
+                <td>12</td>
+                <td>3%</td>
+                <td>12.2</td>
             </tr>
         </table>
     </div>
 
-    <div id="sign2" style="width:50%; float:right;">
-        <table style="width:90%;">
-            <tr style="border-bottom-style: solid;">
-                <td></td>
-            </tr>
-            <tr>
-                <td>signature of the receiver</td>
-            </tr>
-        </table>
+    <div style="margin-top:15px;">
+        <div id="paymentMethod" style="width:50%; float:left;">
+            <table style="width:100%;">
+                <tr>
+                    <th>Payment Method</th>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <th>Payment Date</th>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <th>Account number</th>
+                    <td>3</td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="summary" style="width:50%; float:right;">
+            <table style="width:100%;">
+                <tr>
+                    <th>Price</th>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <th>Tax</th>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <th>Sum</th>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <th>Price text</th>
+                    <td>trzy</td>
+                </tr>
+            </table>
+        </div>
     </div>
+
+    <div id="signatures" style="margin-top:300px;">
+        <div id="sign1" style="width:50%; float:left;">
+            <table style="width:90%;">
+                <tr style="border-bottom-style: solid;" ">
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>the signature of the issuer</td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="sign2" style="width:50%; float:right;">
+            <table style="width:90%;">
+                <tr style="border-bottom-style: solid;">
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>signature of the receiver</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
 </div>
+
+
