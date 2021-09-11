@@ -11,7 +11,6 @@ using TabApp.Models;
 
 namespace TabApp.Controllers
 {
-    [Authorize(Roles = Roles.User)]
     public class MessageController : Controller
     {
         private readonly dbContext _context;
@@ -47,6 +46,11 @@ namespace TabApp.Controllers
 
         // GET: Message/Create
         public IActionResult Create()
+        {
+            return View();
+        }
+        // GET: Message/SendToWorker
+        public IActionResult SendToWorker()
         {
             return View();
         }
