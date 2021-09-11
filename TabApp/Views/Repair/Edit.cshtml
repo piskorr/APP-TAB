@@ -24,9 +24,8 @@
                 </label>
             </div>
             <div class="form-group">
-                <label asp-for="RepairStatus.ID" class="control-label"></label>
-                <input asp-for="RepairStatus.ID" class="form-control" asp-items="ViewBag.RepairStatus"/></select>
-                <span asp-validation-for="RepairStatus.ID" class="text-danger"></span>
+                <label> Select repair status</label>
+                <select id="repairStatusID" name="repairStatusID" class="form-control" asp-items="ViewBag.RepairStatus"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
