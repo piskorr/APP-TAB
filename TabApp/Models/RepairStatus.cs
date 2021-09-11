@@ -7,7 +7,6 @@ namespace TabApp.Models
 {
     public class RepairStatus
     {
-        
         public int ID { get; set; }
 
         public string Status { get; set; }

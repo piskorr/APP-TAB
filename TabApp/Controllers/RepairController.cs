@@ -21,7 +21,7 @@ namespace TabApp.Controllers
         // GET: Repair
         public async Task<IActionResult> Index()
         {
-            var dbContext = _context.Repair.Include(r => r.Item);
+            var dbContext = _context.Repair.Include(r => r.Item).Include(r => r.RepairStatus).Include(r => r.PickupCode);
             return View(await dbContext.ToListAsync());
         }
 
@@ -35,7 +35,10 @@ namespace TabApp.Controllers
 
             var repair = await _context.Repair
                 .Include(r => r.Item)
+                .Include(r => r.RepairStatus)
+                .Include(r => r.PickupCode)
                 .FirstOrDefaultAsync(m => m.ID == id);
+    
             if (repair == null)
             {
                 return NotFound();
@@ -63,7 +66,6 @@ namespace TabApp.Controllers
                 ViewBag.ItemDescription = item.Description;
             }
 
-           //ViewData["StatusList"] = new SelectList(_context.RepairStatus, "ID", "Status");
             return View();
         }
 
@@ -76,7 +78,7 @@ namespace TabApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int? itemID, [Bind("AdmissionDate,IssueDate,Cost,Warranty")] Repair repair, 
+        public async Task<IActionResult> Create(int? itemID, [Bind("AdmissionDate,Cost,Warranty")] Repair repair, 
         [Bind("SerialNumber,Description")] Item item)
         {
             if (ModelState.IsValid)
@@ -115,12 +117,15 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
-            var repair = await _context.Repair.FindAsync(id);
+            var repair = await _context.Repair
+            .Include(r => r.RepairStatus)
+            .FirstOrDefaultAsync(m => m.ID == id);
+
             if (repair == null)
             {
                 return NotFound();
             }
-            ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description", repair.ItemID);
+            ViewData["RepairStatus"] = new SelectList(_context.RepairStatus, "ID", "Status", repair.RepairStatus.ID);
             return View(repair);
         }
 
@@ -129,7 +134,7 @@ namespace TabApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,AdmissionDate,IssueDate,Cost,Warranty,Status,PickupCode,ItemID")] Repair repair)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,AdmissionDate,Warranty,RepairStatus")] Repair repair)
         {
             if (id != repair.ID)
             {
@@ -156,7 +161,8 @@ namespace TabApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description", repair.ItemID);
+            ViewData["RepairStatus"] = new SelectList(_context.RepairStatus, "ID", "Status", repair.RepairStatus.ID);
+            //ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description", repair.ItemID);
             return View(repair);
         }
 
