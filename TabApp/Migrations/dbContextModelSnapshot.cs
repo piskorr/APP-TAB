@@ -158,6 +158,7 @@ namespace TabApp.Migrations
             modelBuilder.Entity("TabApp.Models.PickupCode", b =>
                 {
                     b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Value")
@@ -204,6 +205,9 @@ namespace TabApp.Migrations
                         .IsRequired()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("PickupCodeID")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int?>("RepairStatusID")
                         .HasColumnType("INTEGER");
 
@@ -213,6 +217,9 @@ namespace TabApp.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("ItemID");
+
+                    b.HasIndex("PickupCodeID")
+                        .IsUnique();
 
                     b.HasIndex("RepairStatusID");
 
@@ -340,17 +347,6 @@ namespace TabApp.Migrations
                     b.Navigation("Sender");
                 });
 
-            modelBuilder.Entity("TabApp.Models.PickupCode", b =>
-                {
-                    b.HasOne("TabApp.Models.Repair", "Repair")
-                        .WithOne("PickupCode")
-                        .HasForeignKey("TabApp.Models.PickupCode", "ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Repair");
-                });
-
             modelBuilder.Entity("TabApp.Models.Repair", b =>
                 {
                     b.HasOne("TabApp.Models.Item", "Item")
@@ -359,11 +355,17 @@ namespace TabApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TabApp.Models.PickupCode", "PickupCode")
+                        .WithOne("Repair")
+                        .HasForeignKey("TabApp.Models.Repair", "PickupCodeID");
+
                     b.HasOne("TabApp.Models.RepairStatus", "RepairStatus")
                         .WithMany("Repair")
                         .HasForeignKey("RepairStatusID");
 
                     b.Navigation("Item");
+
+                    b.Navigation("PickupCode");
 
                     b.Navigation("RepairStatus");
                 });
@@ -422,6 +424,11 @@ namespace TabApp.Migrations
                     b.Navigation("Worker");
                 });
 
+            modelBuilder.Entity("TabApp.Models.PickupCode", b =>
+                {
+                    b.Navigation("Repair");
+                });
+
             modelBuilder.Entity("TabApp.Models.PriceList", b =>
                 {
                     b.Navigation("Service");
@@ -430,8 +437,6 @@ namespace TabApp.Migrations
             modelBuilder.Entity("TabApp.Models.Repair", b =>
                 {
                     b.Navigation("Invoice");
-
-                    b.Navigation("PickupCode");
 
                     b.Navigation("Service");
                 });

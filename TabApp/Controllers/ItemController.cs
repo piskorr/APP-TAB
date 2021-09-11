@@ -24,6 +24,22 @@ namespace TabApp.Controllers
             return View(await _context.Item.ToListAsync());
         }
 
+
+        // GET: Item
+        public async Task<IActionResult> UsersItems()
+        {
+            var currentUserID = await _context.Person
+                .Where(u => u.LoginCredentials.UserName == User.Identity.Name)
+                .Select(p => p.ID)
+                .FirstAsync();
+
+            var items = await _context.Item
+                .Where(i => i.Person.ID == currentUserID)
+                .ToListAsync();
+
+            return View(items);
+        }
+
         // GET: Item/Details/5
         public async Task<IActionResult> Details(int? id)
         {

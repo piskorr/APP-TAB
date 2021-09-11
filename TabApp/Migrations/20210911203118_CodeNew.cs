@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TabApp.Migrations
 {
-    public partial class PickupCodeNew : Migration
+    public partial class CodeNew : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

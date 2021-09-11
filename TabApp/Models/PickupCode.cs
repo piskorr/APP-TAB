@@ -8,7 +8,6 @@ namespace TabApp.Models
 {
     public class PickupCode
     {
-        [ForeignKey("Repair")]
         public int ID { get; set; }
 
         public string Value { get; set; }
