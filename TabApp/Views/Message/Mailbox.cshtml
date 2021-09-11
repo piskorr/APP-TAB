@@ -1,0 +1,65 @@
+@model IEnumerable<TabApp.Models.Message>
+
+@{
+    ViewData["Title"] = "Mailbox";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">New message</a>
+</p>
+<p>
+    <a asp-action="SendToWorker">Contact Support</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                From
+            </th>
+            <th>
+                Title
+            </th>
+            <th>
+                Date
+            </th>
+            <th>
+                
+            </th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        <tr>
+            <th>
+                <input type=text name="FromFilter">
+            </th>
+            <th>
+                <input type=text name="TitleFilter">
+            </th>
+            <th>
+            </th>
+            <th>
+                <button type="submit" class="btn btn-outline-success my-2 my-sm-0"> Filter </button>
+            </th>
+        </tr>
+@foreach (var message in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelMessage => message.Sender.Name)
+            </td>
+            <td>
+                <a asp-action="ShowMessage" asp-route-id="@message.ID">@Html.DisplayFor(modelMessage => message.Title)</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelMessage => message.Date)
+            </td>
+            <td>
+                <a asp-action="Reply" asp-route-id="@message.ID">Reply</a> |
+                <a asp-action="Delete" asp-route-id="@message.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
