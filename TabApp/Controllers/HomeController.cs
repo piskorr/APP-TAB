@@ -35,6 +35,11 @@ namespace TabApp.Controllers
             return View();
         }
 
+        public IActionResult Preview()
+        {
+            return View();
+        }
+
         [HttpGet("login")]
         public IActionResult Login(string returnUrl)
         {
@@ -124,6 +129,11 @@ namespace TabApp.Controllers
         }
 
         public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        public IActionResult Profile()
         {
             return View();
         }
