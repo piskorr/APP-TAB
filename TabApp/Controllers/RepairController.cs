@@ -50,8 +50,6 @@ namespace TabApp.Controllers
 
         // GET: Repair/Create/itemId
         public async Task<IActionResult> Create(int? itemID)
-        // GET: Repair/Create
-        public IActionResult Create()
         {
             if (itemID != null)
             {
@@ -77,7 +75,6 @@ namespace TabApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int? itemID, [Bind("AdmissionDate,IssueDate,Cost,Warranty,Status,PickupCode")] Repair repair, [Bind("SerialNumber,Description")] Item item)
-        public async Task<IActionResult> Create([Bind("ID,AdmissionDate,IssueDate,Cost,Warranty,Status,PickupCode,ItemID")] Repair repair)
         {
             if (ModelState.IsValid)
             {
