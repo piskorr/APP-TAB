@@ -76,8 +76,13 @@ namespace TabApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int? itemID, [Bind("AdmissionDate,IssueDate,Cost,Warranty")] Repair repair, 
-        [Bind("SerialNumber,Description")] Item item)
+<<<<<<<<< Temporary merge branch 1
+        public async Task<IActionResult> Create([Bind("ID,AdmissionDate,IssueDate,Cost,Warranty,Status,PickupCode,ItemID")] Repair repair)
+        {
+            if (ModelState.IsValid)
+            {
+=========
+        public async Task<IActionResult> Create(int? itemID, [Bind("AdmissionDate,IssueDate,Cost,Warranty,Status,PickupCode")] Repair repair, [Bind("SerialNumber,Description")] Item item)
         {
             if (ModelState.IsValid)
             {
@@ -91,10 +96,8 @@ namespace TabApp.Controllers
                     await _context.SaveChangesAsync();
                     repair.ItemID = item.ID;
                 }
-
-                var repairStatus = await _context.RepairStatus.FindAsync(1);
-                repair.RepairStatus = repairStatus;
-
+                  
+>>>>>>>>> Temporary merge branch 2
                 _context.Add(repair);
                 await _context.SaveChangesAsync();
 
@@ -104,6 +107,10 @@ namespace TabApp.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+<<<<<<<<< Temporary merge branch 1
+            ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description", repair.ItemID);
+=========
+>>>>>>>>> Temporary merge branch 2
             return View(repair);
         }
 

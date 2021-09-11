@@ -9,6 +9,9 @@ namespace TabApp.Models
     {
         public int ID { get; set; }
 
+
+        public String Title { get; set; }
+
         public String Content { get; set; }
 
         [DataType(DataType.Date)]

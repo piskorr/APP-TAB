@@ -27,6 +27,9 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
+<<<<<<<<< Temporary merge branch 1
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+=========
             <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" id="itemID" name="itemID"/>
             <div class="form-group">
@@ -39,6 +42,7 @@
                 <input asp-for="Item.Description" class="form-control" id="ItemDescription"/>
                 <span asp-validation-for="Item.Description" class="text-danger"></span>
             </div>
+>>>>>>>>> Temporary merge branch 2
             <div class="form-group">
                 <label asp-for="AdmissionDate" class="control-label"></label>
                 <input asp-for="AdmissionDate" class="form-control" />
@@ -60,13 +64,33 @@
                 </label>
             </div>
             <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <input asp-for="Status" class="form-control" />
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PickupCode" class="control-label"></label>
+                <input asp-for="PickupCode" class="form-control" />
+                <span asp-validation-for="PickupCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+<<<<<<<<< Temporary merge branch 1
+                <label asp-for="ItemID" class="control-label"></label>
+                <select asp-for="ItemID" class ="form-control" asp-items="ViewBag.ItemID"></select>
+            </div>
+            <div class="form-group">
+=========
+>>>>>>>>> Temporary merge branch 2
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
+<<<<<<<<< Temporary merge branch 1
+=========
 
+>>>>>>>>> Temporary merge branch 2
 <div>
     <a asp-action="Index">Back to List</a>
 </div>

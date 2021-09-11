@@ -9,9 +9,18 @@ using Microsoft.EntityFrameworkCore;
 using TabApp.Enums;
 using TabApp.Models;
 
+
 namespace TabApp.Controllers
 {
     [Authorize(Roles = Roles.User)]
+=========
+>>>>>>>>> Temporary merge branch 2
+    [Authorize(Roles = Roles.User)]
+=========
+>>>>>>>>> Temporary merge branch 2
+    [Authorize(Roles = Roles.User)]
+=========
+>>>>>>>>> Temporary merge branch 2
     public class MessageController : Controller
     {
         private readonly dbContext _context;
@@ -46,20 +55,58 @@ namespace TabApp.Controllers
         }
 
         // GET: Message/Create
-        public IActionResult Create()
+        public IActionResult Create(string? receiver)
         {
+            ViewBag.receiver = receiver;
             return View();
         }
 
-        // POST: Message/Create
+        // GET: Message/Mailbox
+        public async Task<IActionResult> Mailbox()
+        {
+            var name = User.Identity.Name;
+            var messages = await _context.Message.Include("Sender").Where( recv => recv.Addressee.LoginCredentials.UserName == name).ToListAsync();
+            
+
+            return View(messages);
+        }
+
+        public async Task<IActionResult> ShowMessage(int? id)
+        { 
+            if(id == null)
+                return RedirectToAction(nameof(Mailbox));
+
+            var currentUserID = await _context.Person.Where(u => u.LoginCredentials.UserName == User.Identity.Name).Select(p=> p.ID).FirstAsync();
+
+            var message = await _context.Message.Include("Sender").Include("Addressee").Where( msg => msg.ID == id).FirstAsync();
+
+            if(currentUserID != message.Addressee.ID)
+                return Unauthorized();
+
+            return View(new []{message});
+        }
+
+        // GET: Message/SendToWorker
+        public IActionResult SendToWorker()
+        {
+            return View();
+        }
+        // POST: Message/SendToWorker
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Content,Date")] Message message)
+        public async Task<IActionResult> SendToWorker([Bind("Content, Title")] Message message)
         {
             if (ModelState.IsValid)
             {
+                var adresee = _context.Person.Where(p => p.Role == "Support").ToList();
+                var support = adresee.ElementAt((new Random()).Next(adresee.Count()));
+
+                var sender = _context.Person.FirstOrDefaultAsync(p => p.LoginCredentials.UserName == User.Identity.Name);
+
+                message.Addressee = support;
+                message.Sender = sender.Result;
                 _context.Add(message);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
