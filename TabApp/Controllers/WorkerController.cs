@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using TabApp.Enums;
 using TabApp.Models;
 
 namespace TabApp.Controllers
@@ -75,17 +76,40 @@ namespace TabApp.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            ViewData["EmployeeRole"] = Roles.Employee;
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register([Bind("Earnings,PESEL,AccountNumber,JobPosition,PersonID,Name,Surname,Address,Email,PhoneNumber,ID,UserName,Password")]
-                                                    Worker worker, Person person, LoginCredentials loginCredentials)
+        public async Task<IActionResult> Register(//todo bind all to person?
+            [Bind("Name,Surname,Address,Email,Role,PhoneNumber")] Person person,
+            [Bind("Earnings,PESEL,AccountNumber,JobPosition")] Worker worker,
+            [Bind("UserName,Password")] LoginCredentials loginCredentials)
         {
+
             if (ModelState.IsValid)
             {
+                var email = await _context.Person
+                .FirstOrDefaultAsync(l => l.Email.Equals(person.Email));
+
+                var login = await _context.LoginCredentials
+                .FirstOrDefaultAsync(l => l.UserName.Equals(loginCredentials.UserName));
+
+                if (login != null)
+                {
+                    TempData["Error"] = "Login is taken!";
+                    return View();
+                }
+
+                if (email != null)
+                {
+                    TempData["Error"] = "Email is taken!";
+                    return View();
+                }
+
                 _context.Add(person);
+                
                 await _context.SaveChangesAsync();
                 worker.PersonID = person.ID;
                 loginCredentials.ID = person.ID;
@@ -95,6 +119,8 @@ namespace TabApp.Controllers
 
                 return Redirect("/");
             }
+
+            TempData["Error"] = "Invalid credentials";
             return View();
         }
 
