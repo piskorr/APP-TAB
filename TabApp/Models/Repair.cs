@@ -20,9 +20,9 @@ namespace TabApp.Models
 
         public bool Warranty {get; set;}
 
-        public String Status {get; set;}
+        public RepairStatus Status {get; set;}
 
-        public ulong PickupCode {get; set;}
+        public PickupCode PickupCode {get; set;}
 
         public int? ItemID { get; set; }
 

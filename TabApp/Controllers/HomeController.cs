@@ -56,7 +56,7 @@ namespace TabApp.Controllers
                 .Include(l => l.Person)
                 .FirstOrDefaultAsync(l => l.UserName.Equals(username) && l.Password.Equals(password));
 
-            if (login != null)
+            if (login.Result != null)
             {
                 var claims = new List<Claim>();
                 claims.Add(new Claim("username", username));

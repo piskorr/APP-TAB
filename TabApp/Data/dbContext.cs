@@ -38,4 +38,6 @@ using TabApp.Models;
         public DbSet<TabApp.Models.LoginCredentials> LoginCredentials { get; set; }
 
         public DbSet<TabApp.Models.RepairStatus> RepairStatus { get; set; }
+
+        public DbSet<TabApp.Models.PickupCode> PickupCodes { get; set; }
 }
