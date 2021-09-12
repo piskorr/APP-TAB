@@ -137,6 +137,37 @@ namespace TabApp.Controllers
             return View(new[] { message });
         }
 
+        // GET: Message/Mailbox
+        public async Task<IActionResult> Sendbox()
+        {
+            var name = User.Identity.Name;
+            var messages = await _context.Message.Include("Addressee").Where(send => send.Sender.LoginCredentials.UserName == name).ToListAsync();
+            foreach (var msg in messages)
+            {
+                msg.Addressee = await _context.Person.Include("LoginCredentials").Where(p => p.ID == msg.Addressee.ID).FirstOrDefaultAsync();
+            }
+
+
+            return View(messages);
+        }
+
+        // public async Task<IActionResult> ShowMessage(int? id)
+        // {
+        //     if (id == null)
+        //         return RedirectToAction(nameof(Mailbox));
+
+        //     var currentUserID = await _context.Person.Where(u => u.LoginCredentials.UserName == User.Identity.Name).Select(p => p.ID).FirstAsync();
+
+        //     var message = await _context.Message.Include("Sender").Include("Addressee").Where(msg => msg.ID == id).FirstAsync();
+
+        //     message.Sender = await _context.Person.Include("LoginCredentials").Where(p => p.ID == message.Sender.ID).FirstOrDefaultAsync();
+
+        //     if (currentUserID != message.Addressee.ID)
+        //         return Unauthorized();
+
+        //     return View(new[] { message });
+        // }
+
         // GET: Message/SendToWorker
         public IActionResult SendToWorker()
         {
