@@ -11,8 +11,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
-//kupka
-
 namespace TabApp.Controllers
 {
     public class HomeController : Controller
