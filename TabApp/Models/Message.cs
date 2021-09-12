@@ -9,10 +9,14 @@ namespace TabApp.Models
     {
         public int ID { get; set; }
 
-
+        [StringLength(50, MinimumLength = 1)]
+        [Required]
         public String Title { get; set; }
 
+        [Required]
+        [StringLength(254, MinimumLength = 1)]
         public String Content { get; set; }
+
 
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }

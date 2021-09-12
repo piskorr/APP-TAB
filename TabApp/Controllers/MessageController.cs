@@ -27,6 +27,29 @@ namespace TabApp.Controllers
             return View(await _context.Message.ToListAsync());
         }
 
+        // GET: Reply
+        public async Task<IActionResult> Reply(int? ID)
+        {
+            if (ID == null)
+                return RedirectToAction(nameof(Mailbox));
+
+            var msg = await _context.Message.Where(msg => msg.ID == ID).Include("Sender").FirstOrDefaultAsync();
+
+            if(msg == null)
+                return RedirectToAction(nameof(AddresseeNotFound));
+
+            var login = await _context.LoginCredentials.Where(l => l.Person.ID == msg.Sender.ID).FirstOrDefaultAsync();
+
+            if(login == null)
+                return RedirectToAction(nameof(AddresseeNotFound));
+
+            ViewBag.receiver = login.UserName;
+            ViewBag.msgTitle = "re: "+msg.Title;
+
+            return View("Create");
+        }
+
+
         // GET: Message/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -41,40 +64,108 @@ namespace TabApp.Controllers
             {
                 return NotFound();
             }
-
+            
             return View(message);
+        }
+        // GET: Message/Create
+        public IActionResult AddresseeNotFound()
+        {
+            return View();
         }
 
         // GET: Message/Create
-        public IActionResult Create(string? receiver)
+        public IActionResult Create()
         {
-            ViewBag.receiver = receiver;
+            ViewBag.msgTitle = "";
+            ViewBag.receiver = "";
             return View();
+        }
+        // POST: Message/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(string recv, [Bind("Content, Title")] Message message)
+        {   
+            if (ModelState.IsValid)
+            {
+                if(recv == "" || recv == null)
+                    return RedirectToAction(nameof(AddresseeNotFound));
+
+                var addr = _context.Person.Where(p => p.LoginCredentials.UserName == recv).FirstOrDefaultAsync();
+                if (addr.Result == null)
+                    return RedirectToAction(nameof(AddresseeNotFound));
+
+                var sender = _context.Person.FirstOrDefaultAsync(p => p.LoginCredentials.UserName == User.Identity.Name);
+
+                message.Addressee = addr.Result;
+                message.Sender = sender.Result;
+                _context.Add(message);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Mailbox));
         }
 
         // GET: Message/Mailbox
         public async Task<IActionResult> Mailbox()
         {
             var name = User.Identity.Name;
-            var messages = await _context.Message.Include("Sender").Where( recv => recv.Addressee.LoginCredentials.UserName == name).ToListAsync();
-            
+            var messages = await _context.Message.Include("Sender").Where(recv => recv.Addressee.LoginCredentials.UserName == name).ToListAsync();
+            foreach (var msg in messages)
+            {
+                msg.Sender = await _context.Person.Include("LoginCredentials").Where(p => p.ID == msg.Sender.ID).FirstOrDefaultAsync();
+            }
+
 
             return View(messages);
         }
 
         public async Task<IActionResult> ShowMessage(int? id)
-        { 
-            if(id == null)
+        {
+            if (id == null)
                 return RedirectToAction(nameof(Mailbox));
 
-            var currentUserID = await _context.Person.Where(u => u.LoginCredentials.UserName == User.Identity.Name).Select(p=> p.ID).FirstAsync();
+            var currentUserID = await _context.Person.Where(u => u.LoginCredentials.UserName == User.Identity.Name).Select(p => p.ID).FirstAsync();
 
-            var message = await _context.Message.Include("Sender").Include("Addressee").Where( msg => msg.ID == id).FirstAsync();
+            var message = await _context.Message.Include("Sender").Include("Addressee").Where(msg => msg.ID == id).FirstAsync();
 
-            if(currentUserID != message.Addressee.ID)
+            message.Sender = await _context.Person.Include("LoginCredentials").Where(p => p.ID == message.Sender.ID).FirstOrDefaultAsync();
+
+            if (currentUserID != message.Addressee.ID)
                 return Unauthorized();
 
-            return View(new []{message});
+            return View(new[] { message });
+        }
+
+        // GET: Message/Mailbox
+        public async Task<IActionResult> Sendbox()
+        {
+            var name = User.Identity.Name;
+            var messages = await _context.Message.Include("Addressee").Where(send => send.Sender.LoginCredentials.UserName == name).ToListAsync();
+            foreach (var msg in messages)
+            {
+                msg.Addressee = await _context.Person.Include("LoginCredentials").Where(p => p.ID == msg.Addressee.ID).FirstOrDefaultAsync();
+            }
+
+
+            return View(messages);
+        }
+
+        public async Task<IActionResult> ShowSentMessage(int? id)
+        {
+            if (id == null)
+                return RedirectToAction(nameof(Mailbox));
+
+            var currentUserID = await _context.Person.Where(u => u.LoginCredentials.UserName == User.Identity.Name).Select(p => p.ID).FirstAsync();
+
+            var message = await _context.Message.Include("Sender").Include("Addressee").Where(msg => msg.ID == id).FirstAsync();
+
+            message.Addressee = await _context.Person.Include("LoginCredentials").Where(p => p.ID == message.Addressee.ID).FirstOrDefaultAsync();
+
+            if (currentUserID != message.Sender.ID)
+                return Unauthorized();
+
+            return View(new[] { message });
         }
 
         // GET: Message/SendToWorker
@@ -100,9 +191,8 @@ namespace TabApp.Controllers
                 message.Sender = sender.Result;
                 _context.Add(message);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
             }
-            return View(message);
+            return RedirectToAction(nameof(Mailbox));
         }
 
         // GET: Message/Edit/5
@@ -164,8 +254,7 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
-            var message = await _context.Message
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var message = await _context.Message.FirstOrDefaultAsync(m => m.ID == id);
             if (message == null)
             {
                 return NotFound();
@@ -177,12 +266,21 @@ namespace TabApp.Controllers
         // POST: Message/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            var message = await _context.Message.FindAsync(id);
+            if (id == null)
+                return RedirectToAction(nameof(Mailbox));
+
+            var currentUserID = await _context.Person.Where(u => u.LoginCredentials.UserName == User.Identity.Name).Select(p => p.ID).FirstAsync();
+
+            var message = await _context.Message.Include("Addressee").Where(msg => msg.ID == id).FirstAsync();
+
+            if (currentUserID != message.Addressee.ID)
+                return Unauthorized();
+
             _context.Message.Remove(message);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Mailbox));
         }
 
         private bool MessageExists(int id)

@@ -40,6 +40,11 @@ namespace TabApp.Controllers
             return View();
         }
 
+        public IActionResult Profile()
+        {
+            return View();
+        }
+
         [HttpGet("login")]
         public IActionResult Login(string returnUrl)
         {
