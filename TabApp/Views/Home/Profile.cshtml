@@ -1,39 +1,56 @@
-@model IEnumerable<TabApp.Models.Person>
+@model TabApp.Models.Person
 
-    @{
-    ViewData["Title"] = "Index";
-    }
+@{
+    ViewData["Title"] = "Profile";
+}
 
-    <h3>My profile</h3>
-    <a class="btn btn-outline-primary"asp-area="" asp-controller="Person" asp-action="Edit" asp-route-id=""> Edit</a>
+<h3>My profile</h3>
+<a class="btn btn-outline-primary" asp-area="" asp-controller="Person" asp-action="Edit" asp-route-id=""> Edit</a>
 
-    <table class="table">
-        <tr>
-            <th>Login</th>
-            <td>Darek</td>
-        </tr>
-        <tr>
-            <th>Password</th>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LoginCredentials.UserName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LoginCredentials.UserName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LoginCredentials.Password)
+        </dt>
+        <dd class="col-sm-10">
             <td><a asp-area="" asp-controller="Home" asp-action="ForgotPassword">Change password</a></td>
-        </tr>
-        <tr>
-            <th>First name</th>
-            <td>Darek</td>
-        </tr>
-        <tr>
-            <th>Last name</th>
-            <td>Darek</td>
-        </tr>
-        <tr>
-            <th>Address</th>
-            <td>Katowice nocom ze spirzowom mocom</td>
-        </tr>
-        <tr>
-            <th>Phone numver</th>
-            <td>123123123</td>
-        </tr>
-        <tr>
-            <th>Email</th>
-            <td>Darek@darek.123</td>
-        </tr>
-    </table>
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Surname)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Surname)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+    </dl>
+</div>

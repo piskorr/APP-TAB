@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
+@{ 
+    bool isAdmin = User.Claims.Any(c => c.Type == "Role" && c.Value == "Admin");
+}
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -37,7 +39,7 @@
     }
 
 
-            @if ( User.Identity.IsAuthenticated ) {
+            @if ( User.Identity.IsAuthenticated && isAdmin) {
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Persons
