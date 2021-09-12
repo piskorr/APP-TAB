@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 @{ 
-    bool isAdmin = User.Claims.Any(c => c.Type == "Role" && c.Value == "Admin");
+    bool isAdmin = User.Claims.Any(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role" && c.Value == "Admin");
+   // bool is
 }
 <head>
     <meta charset="utf-8" />
@@ -79,7 +80,7 @@
                     Repairs
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" asp-area="" asp-controller="Repair" asp-action="Create"> Add Repair </a>
+                    <a class="dropdown-item" asp-area="" asp-controller="Repair" asp-action="Add"> Add Repair </a>
                     <a class="dropdown-item" asp-area="" asp-controller="Repair" asp-action="Index"> Repairs list </a>
                 </div>
             </li>
