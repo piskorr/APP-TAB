@@ -4,6 +4,7 @@
     ViewData["Title"] = "Generate";
     var nip = ViewData["NIP"] as string;
     var date = ViewData["InvoiceDate"] as string;
+    var no = 1;
 }
 
 <div id="container" style="margin: 0mm;">
@@ -44,16 +45,16 @@
         <h5>Issuer</h5>
         <table>
             <tr>
-                <td> Name : @Html.DisplayFor(model => model.Invoice.Person.Name) </td>
+                <td> Name : This company name </td>
             </tr>
             <tr>
-                <td> Address :  @Html.DisplayFor(model => model.Invoice.Person.Address)</td>
+                <td> Address :  This company address</td>
             </tr>
             <tr>
-                <td> NIP : @Html.DisplayFor(model => model.Invoice.NIP) </td>
+                <td> NIP : This company NIP </td>
             </tr>
             <tr>
-                <td> Phone : @Html.DisplayFor(model => model.Invoice.Person.PhoneNumber) </td>
+                <td> Phone :This company name </td>
             </tr>
         </table>
     </div>
@@ -62,16 +63,16 @@
         <h5>Receiver</h5>
         <table>
             <tr>
-                <td> Name : @Html.DisplayFor(model => model.Invoice.Person.Name) </td>
+                <td> Name : @Html.DisplayFor(model => model.Item.Person.Name) </td>
             </tr>
             <tr>
-                <td> Address :  @Html.DisplayFor(model => model.Invoice.Person.Address) </td>
+                <td> Address :  @Html.DisplayFor(model => model.Item.Person.Address) </td>
             </tr>
             <tr>
-                <td> NIP : @Html.DisplayFor(model => model.Invoice.NIP) </td>
+                <td> NIP : @nip </td>
             </tr>
             <tr>
-                <td> Phone : @Html.DisplayFor(model => model.Invoice.Person.PhoneNumber) </td>
+                <td> Phone : @Html.DisplayFor(model => model.Item.Person.PhoneNumber) </td>
             </tr>
         </table>
     </div>
@@ -83,61 +84,27 @@
             <tr style="text-decoration:underline;">
                 <th>No.</th>
                 <th>Name </th>
-                <th>Quantity</th>
                 <th>Price</th>
-                <th>Tax</th>
-                <th>Final Price</th>
             </tr>
-            <tr>
-                <td>1</td>
-                <td>test </td>
-                <td>3</td>
-                <td>12</td>
-                <td>3%</td>
-                <td>12.2</td>
-            </tr>
+
+            @foreach (var item in Model.Service)
+            {
+
+                <tr>
+                    <td>@item.ID</td>
+                    <td>@item.Repair.Item.SerialNumber</td>
+                    <td>@item.PriceList.Price</td>
+
+                </tr>
+
+             }
+
         </table>
     </div>
 
-    <div style="margin-top:15px;">
-        <div id="paymentMethod" style="width:50%; float:left;">
-            <table style="width:100%;">
-                <tr>
-                    <th>Payment Method</th>
-                    <td>1</td>
-                </tr>
-                <tr>
-                    <th>Payment Date</th>
-                    <td>2</td>
-                </tr>
-                <tr>
-                    <th>Account number</th>
-                    <td>3</td>
-                </tr>
-            </table>
-        </div>
+    <div>Final price : @Html.DisplayFor(model => model.Cost)</div>
 
-        <div id="summary" style="width:50%; float:right;">
-            <table style="width:100%;">
-                <tr>
-                    <th>Price</th>
-                    <td>1</td>
-                </tr>
-                <tr>
-                    <th>Tax</th>
-                    <td>2</td>
-                </tr>
-                <tr>
-                    <th>Sum</th>
-                    <td>3</td>
-                </tr>
-                <tr>
-                    <th>Price text</th>
-                    <td>trzy</td>
-                </tr>
-            </table>
-        </div>
-    </div>
+   
 
     <div id="signatures" style="margin-top:300px;">
         <div id="sign1" style="width:50%; float:left;">
