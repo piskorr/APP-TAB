@@ -6,37 +6,10 @@
     ViewData["Title"] = "Check status";
     //@ViewBag.FromFilter
     var returnUrl = ViewData["ReturnUrl"] as string;
-<<<<<<< HEAD
-    var repStatus = TempData["Status"] as string;
-}
-<h2>Check your repair status</h2>
-
-<div id="container" class="col-lg-6">
-    <hr />
-    <h5>Enter pickup code</h5>
-
-    <form asp-controller="Home" asp-action="CheckStatus">
-        <input class="form-control" type=text name="FromFilter" value="" placeholder="#####">
-
-        <button type="submit" class="btn btn-outline-success my-2 my-sm-0"> Check status </button>
-    </form>
-
-    <br />
-
-    <div id="repairStatus">
-        @if(!string.IsNullOrEmpty(repStatus)) {
-        <h4 class="" style="padding:20px; text-align:left;">Status : @repStatus</h4>
-        }
-    </div>
-
-</div>
-=======
     var repStatus = ViewData["Status"] as string;
     var error = ViewData["Error"] as string;
 }
 <h2>Check your repair status</h2>
-
->>>>>>> newNewPiskor
 
 
 <div id="container" class="col-lg-6">

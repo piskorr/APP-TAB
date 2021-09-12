@@ -10,15 +10,12 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-<<<<<<< HEAD
-=======
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using TabApp.Enums;
->>>>>>> newNewPiskor
 
 namespace TabApp.Controllers
 {
