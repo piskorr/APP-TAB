@@ -10,6 +10,15 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+<<<<<<< HEAD
+=======
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Linq;
+using TabApp.Enums;
+>>>>>>> newNewPiskor
 
 namespace TabApp.Controllers
 {
@@ -44,6 +53,29 @@ namespace TabApp.Controllers
             return View();
         }
 
+        [HttpPost]
+        public IActionResult PickupCodes(string Code)
+        {
+            if (!string.IsNullOrEmpty(Code))
+            {
+                var repair =  _context.Repair
+                    .Include("RepairStatus")
+                    .Include("PickupCode")
+                    .Where(u => u.PickupCode.Value.Equals(Code))
+                    .FirstOrDefault();
+
+                if (repair == null)
+                {
+                    ViewData["Error"] = "Invalid code. Try again.";
+                    return View();
+                }
+
+                ViewData["Status"] = repair.RepairStatus.Status;
+                return View();
+            }
+
+            return View();
+        }
 
         public async Task<IActionResult> Profile()
         {
@@ -53,6 +85,68 @@ namespace TabApp.Controllers
                 .FirstAsync();
 
             return View(currentUser);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditProfile(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var person = await _context.Person
+                .Include(r => r.LoginCredentials)
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (person == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["Role"] = person.Role;
+            return View(person);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(int id, [Bind("ID,Name,Surname,Role,Address,Email,Role,PhoneNumber")] Person person)
+        {
+            if (id != person.ID)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                var email = await _context.Person
+                .FirstOrDefaultAsync(p => p.Email.Equals(person.Email) && p.ID != person.ID);
+
+                if (email != null)
+                {
+                    TempData["Error"] = "Email is taken!";
+                    ViewData["Role"] = person.Role;
+                    return View(person);
+                }
+
+                try
+                {
+                    _context.Update(person);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PersonExists(person.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Profile));
+            }
+            return View(person);
         }
 
         [HttpGet("login")]
@@ -158,6 +252,11 @@ namespace TabApp.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private bool PersonExists(int id)
+        {
+            return _context.Person.Any(e => e.ID == id);
         }
     }
 }
