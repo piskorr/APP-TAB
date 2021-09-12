@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TabApp.Models;
-using TabApp.Enums;
 
 namespace TabApp.Controllers
 {
@@ -22,7 +21,7 @@ namespace TabApp.Controllers
         // GET: Repair
         public async Task<IActionResult> Index()
         {
-            var dbContext = _context.Repair.Include(r => r.Item).Include(r => r.RepairStatus).Include(r => r.PickupCode);
+            var dbContext = _context.Repair.Include(r => r.Item);
             return View(await dbContext.ToListAsync());
         }
 
@@ -36,10 +35,7 @@ namespace TabApp.Controllers
 
             var repair = await _context.Repair
                 .Include(r => r.Item)
-                .Include(r => r.RepairStatus)
-                .Include(r => r.PickupCode)
                 .FirstOrDefaultAsync(m => m.ID == id);
-    
             if (repair == null)
             {
                 return NotFound();
@@ -67,6 +63,7 @@ namespace TabApp.Controllers
                 ViewBag.ItemDescription = item.Description;
             }
 
+           //ViewData["StatusList"] = new SelectList(_context.RepairStatus, "ID", "Status");
             return View();
         }
 
@@ -79,30 +76,24 @@ namespace TabApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int? itemID, [Bind("AdmissionDate,Cost,Warranty")] Repair repair, 
+        public async Task<IActionResult> Create(int? itemID, [Bind("AdmissionDate,IssueDate,Cost,Warranty")] Repair repair, 
         [Bind("SerialNumber,Description")] Item item)
         {
             if (ModelState.IsValid)
             {
                 if(itemID != null)
                 {
-                    var existingItem = await _context.Item.FindAsync(itemID);
-                    if (existingItem == null)
-                    {
-                        return NotFound();
-                    }
-                    repair.Item = existingItem;
+                    repair.ItemID = itemID;
                 }  
                 else
                 {
                     _context.Add(item);
                     await _context.SaveChangesAsync();
-                    repair.Item = item;
+                    repair.ItemID = item.ID;
                 }
 
                 var repairStatus = await _context.RepairStatus.FindAsync(1);
                 repair.RepairStatus = repairStatus;
-
 
                 _context.Add(repair);
                 await _context.SaveChangesAsync();
@@ -124,15 +115,12 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
-            var repair = await _context.Repair
-                .Include(r => r.RepairStatus)
-                .FirstOrDefaultAsync(m => m.ID == id);
-
+            var repair = await _context.Repair.FindAsync(id);
             if (repair == null)
             {
                 return NotFound();
             }
-            ViewData["RepairStatus"] = new SelectList(_context.RepairStatus, "ID", "Status", repair.RepairStatus.ID);
+            ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description", repair.ItemID);
             return View(repair);
         }
 
@@ -141,7 +129,7 @@ namespace TabApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, int repairStatusID, [Bind("ID,AdmissionDate,Warranty")] Repair repair)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,AdmissionDate,IssueDate,Cost,Warranty,Status,PickupCode,ItemID")] Repair repair)
         {
             if (id != repair.ID)
             {
@@ -152,20 +140,7 @@ namespace TabApp.Controllers
             {
                 try
                 {
-                    var oldRepair = await _context.Repair
-                    .Include(r => r.Item)
-                    .Include(r => r.PickupCode)
-                    .FirstOrDefaultAsync(m => m.ID == id);
-                    
-                    var repairStatus = await _context.RepairStatus.FindAsync(repairStatusID);
-
-                    oldRepair.AdmissionDate = repair.AdmissionDate;
-                    oldRepair.Warranty = repair.Warranty;
-                    oldRepair.RepairStatus = repairStatus;
-                    if(repairStatus.Status == RepairStatuses.Issued)
-                        oldRepair.IssueDate = DateTime.Today;
-
-                    _context.Update(oldRepair);
+                    _context.Update(repair);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -181,8 +156,7 @@ namespace TabApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RepairStatus"] = new SelectList(_context.RepairStatus, "ID", "Status", repair.RepairStatus.ID);
-            //ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description", repair.ItemID);
+            ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description", repair.ItemID);
             return View(repair);
         }
 

@@ -155,7 +155,6 @@ namespace TabApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var item = await _context.Item.FindAsync(id);
-            _context.Repair.RemoveRange(_context.Repair.Where(x => x.Item == item));
             _context.Item.Remove(item);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

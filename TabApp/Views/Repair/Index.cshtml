@@ -7,7 +7,7 @@
 <h1>Repairs</h1>
 
 <p>
-    <a asp-action="Add">Create New</a>
+    <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -52,10 +52,10 @@
                 @Html.DisplayFor(modelItem => item.Warranty)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RepairStatus.Status)
+                @Html.DisplayFor(modelItem => item.RepairStatus)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PickupCode.Value)
+                @Html.DisplayFor(modelItem => item.PickupCode)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Item.Description)
