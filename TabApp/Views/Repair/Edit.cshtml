@@ -18,35 +18,14 @@
                 <input asp-for="AdmissionDate" class="form-control" />
                 <span asp-validation-for="AdmissionDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="IssueDate" class="control-label"></label>
-                <input asp-for="IssueDate" class="form-control" />
-                <span asp-validation-for="IssueDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Cost" class="control-label"></label>
-                <input asp-for="Cost" class="form-control" />
-                <span asp-validation-for="Cost" class="text-danger"></span>
-            </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Warranty" /> @Html.DisplayNameFor(model => model.Warranty)
                 </label>
             </div>
             <div class="form-group">
-                <label asp-for="RepairStatus" class="control-label"></label>
-                <input asp-for="RepairStatus" class="form-control" />
-                <span asp-validation-for="RepairStatus" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PickupCode" class="control-label"></label>
-                <input asp-for="PickupCode" class="form-control" />
-                <span asp-validation-for="PickupCode" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ItemID" class="control-label"></label>
-                <select asp-for="ItemID" class="form-control" asp-items="ViewBag.ItemID"></select>
-                <span asp-validation-for="ItemID" class="text-danger"></span>
+                <label> Select repair status</label>
+                <select id="repairStatusID" name="repairStatusID" class="form-control" asp-items="ViewBag.RepairStatus"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
