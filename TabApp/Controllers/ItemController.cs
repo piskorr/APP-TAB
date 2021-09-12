@@ -24,6 +24,55 @@ namespace TabApp.Controllers
             return View(await _context.Item.ToListAsync());
         }
 
+        public IActionResult SelectOwner(string Description, string SerialNumber)
+        {
+            ViewBag.Description = Description;
+            ViewBag.SerialNumber = SerialNumber;
+            return View();
+        }
+
+        public IActionResult AddNewPerson(string Description, string SerialNumber)
+        {
+            ViewBag.Description = Description;
+            ViewBag.SerialNumber = SerialNumber;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SelectOwner([Bind("ID,SerialNumber,Description")] Item item)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(item);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(item);
+        }
+
+                [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddNewPerson(string Description,string SerialNumber,[Bind("ID,Role,Name,Surname,Address,Email,PhoneNumber")] Person person)
+        {
+            Item item = new Item();
+
+            item.SerialNumber=SerialNumber;
+            item.Description = Description;
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(person);
+                await _context.SaveChangesAsync();
+            }
+
+            item.Person = person;
+            _context.Add(item);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
         // GET: Item/Details/5
         public async Task<IActionResult> Details(int? id)
         {
