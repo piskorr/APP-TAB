@@ -139,10 +139,25 @@ namespace TabApp.Controllers
         }
 
         // GET: Message/Mailbox
-        public async Task<IActionResult> Sendbox()
+        public async Task<IActionResult> Sendbox(string FromFilter, string TitleFilter)
         {
+            ViewBag.FromFilter = FromFilter;
+            ViewBag.TitleFilter = TitleFilter;
+
             var name = User.Identity.Name;
-            var messages = await _context.Message.Include("Addressee").Where(send => send.Sender.LoginCredentials.UserName == name).ToListAsync();
+            var unfiltered_messages = _context.Message.Include("Addressee").Where(send => send.Sender.LoginCredentials.UserName == name);
+
+             if (!String.IsNullOrEmpty(FromFilter))
+             {
+                 unfiltered_messages = unfiltered_messages.Where(msg => msg.Addressee.LoginCredentials.UserName.Contains(FromFilter));
+             }
+             if (!String.IsNullOrEmpty(TitleFilter))
+             {
+                 unfiltered_messages = unfiltered_messages.Where(msg => msg.Title.Contains(TitleFilter));
+             }
+             unfiltered_messages = unfiltered_messages.OrderByDescending(m => m.Date);
+
+            var messages = await unfiltered_messages.ToListAsync();
             foreach (var msg in messages)
             {
                 msg.Addressee = await _context.Person.Include("LoginCredentials").Where(p => p.ID == msg.Addressee.ID).FirstOrDefaultAsync();
@@ -190,6 +205,7 @@ namespace TabApp.Controllers
 
                 message.Addressee = support;
                 message.Sender = sender.Result;
+                message.Date = DateTime.Now;
                 _context.Add(message);
                 await _context.SaveChangesAsync();
             }
