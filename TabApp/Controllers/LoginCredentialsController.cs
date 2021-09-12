@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using TabApp.Enums;
 using TabApp.Models;
 
 namespace TabApp.Controllers
@@ -36,7 +37,8 @@ namespace TabApp.Controllers
             return View(await dbContext.ToListAsync());
         }
 
-        // GET: LoginCredentials/Edit/5
+        // GET: LoginCredentials/Edit/5 \
+        [HttpGet]
         public async Task<IActionResult> ChangeRole(int? id)
         {
             if (id == null)
@@ -50,8 +52,40 @@ namespace TabApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["ID"] = new SelectList(_context.Person, "ID", "Address", loginCredentials.ID);
-            return View(loginCredentials);
+
+            ViewBag.Roles = new List<string> { Roles.Admin, Roles.Employee, Roles.Manager, Roles.Support, Roles.User };
+            ViewData["ID"] = id;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeRoleConfirm(int? id, string role)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            if(role == null)
+            {
+                return BadRequest();
+            }
+
+            var login = await _context.LoginCredentials
+                .Include(l => l.Person)
+                .FirstOrDefaultAsync(l => l.ID == id);
+
+            if (login == null)
+            {
+                return NotFound();
+            }
+
+            var person = login.Person;
+            person.Role = role;
+            _context.Update(person);
+            await _context.SaveChangesAsync();
+
+            return Redirect("/Users");
         }
 
         [HttpPost]

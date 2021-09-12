@@ -46,9 +46,18 @@ namespace TabApp.Controllers
         }
 
         
-        public async Task<IActionResult> Generate(int? repairId, int? invoiceId)
+        public async Task<IActionResult> Generate(int? invoiceId)
         {
-            if (repairId == null || invoiceId == null)
+            if (invoiceId == null)
+            {
+                return NotFound();
+            }
+
+            var invoice = await _context.Invoice
+                .Include("Repair")
+                .FirstOrDefaultAsync(i => i.ID == invoiceId);
+
+            if (invoice == null)
             {
                 return NotFound();
             }
@@ -56,12 +65,9 @@ namespace TabApp.Controllers
             var repair = await _context.Repair
                 .Include("Service")
                 .Include("Item.Person")
-                .FirstOrDefaultAsync(r => r.ID == repairId);
+                .FirstOrDefaultAsync(r => r.ID == invoice.Repair.ID);
 
-            var invoice = await _context.Invoice
-                .FirstOrDefaultAsync(i => i.ID == invoiceId);
-
-            if (repair == null || invoice == null)
+            if (repair == null)
             {
                 return NotFound();
             }

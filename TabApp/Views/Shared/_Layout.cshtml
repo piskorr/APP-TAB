@@ -49,14 +49,15 @@
                         </li>
                     }
 
-                    @if (!isAdmin && !isManager ) {
+                    @if (!isAdmin && !isManager)
+                    {
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="PriceList" asp-action="Preview"> Prices </a>
                         </li>
                     }
 
 
-                    @if ( false )
+                    @if (false)
                     {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -69,7 +70,7 @@
                         </li>
                     }
 
-                    @if (isAdmin)
+                    @if (isManager || isAdmin)
                     {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -108,7 +109,7 @@
                         </li>
                     }
 
-                    @if (isManager || isAdmin )
+                    @if (isManager || isAdmin)
                     {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -121,7 +122,7 @@
                         </li>
                     }
 
-                    @if ( false )
+                    @if (false)
                     {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -159,6 +160,13 @@
                     {
                         <li class="nav-item">
                             <a class="nav-item nav-link" asp-area="" asp-controller="Message" asp-action="Mailbox"> Mailbox <span class="sr-only">(current)</span></a>
+                        </li>
+                    }
+
+                    @if (isAdmin)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-item nav-link" asp-area="" asp-controller="LoginCredentials" asp-action="Index"> Manage Users <span class="sr-only">(current)</span></a>
                         </li>
                     }
 
