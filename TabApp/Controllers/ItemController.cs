@@ -7,6 +7,17 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TabApp.Models;
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using TabApp.Enums;
+using TabApp.Models;
+
 namespace TabApp.Controllers
 {
     public class ItemController : Controller
@@ -24,13 +35,51 @@ namespace TabApp.Controllers
             return View(await _context.Item.ToListAsync());
         }
 
-        public IActionResult SelectOwner(string Description, string SerialNumber)
+        public async Task<IActionResult> SelectOwner(string Description, string SerialNumber, string NameFilter, string SurnameFilter)
         {
             ViewBag.Description = Description;
             ViewBag.SerialNumber = SerialNumber;
-            return View();
+            ViewBag.NameFilter = NameFilter;
+            ViewBag.SurnameFilter = SurnameFilter;
+
+            IQueryable<Person> unfiltered_users = _context.Person;
+
+            if (!String.IsNullOrEmpty(NameFilter))
+            {
+                unfiltered_users = unfiltered_users.Where(u => u.Name.Contains(NameFilter));
+            }
+            if (!String.IsNullOrEmpty(SurnameFilter))
+            {
+                unfiltered_users = unfiltered_users.Where(u => u.Surname.Contains(SurnameFilter));
+            }
+            unfiltered_users = unfiltered_users.OrderBy(m => m.Surname);
+
+            var users = await unfiltered_users.ToListAsync();
+
+            return View(users);
+
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddItemWithPerson(string Description, string SerialNumber, int PersonID)
+        {
+            Item item = new Item();
+
+            item.SerialNumber = SerialNumber;
+            item.Description = Description;
+
+            var person = _context.Person.Where(p => p.ID == PersonID).FirstAsync();
+            
+            if (person.Result == null)
+                return RedirectToAction(nameof(Index));
+
+            item.Person = person.Result;
+            _context.Add(item);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
         public IActionResult AddNewPerson(string Description, string SerialNumber)
         {
             ViewBag.Description = Description;
@@ -38,18 +87,18 @@ namespace TabApp.Controllers
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SelectOwner([Bind("ID,SerialNumber,Description")] Item item)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(item);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(item);
-        }
+        // [HttpPost]
+        // [ValidateAntiForgeryToken]
+        // public async Task<IActionResult> SelectOwner([Bind("ID,SerialNumber,Description")] Item item)
+        // {
+        //     if (ModelState.IsValid)
+        //     {
+        //         _context.Add(item);
+        //         await _context.SaveChangesAsync();
+        //         return RedirectToAction(nameof(Index));
+        //     }
+        //     return View(item);
+        // }
 
                 [HttpPost]
         [ValidateAntiForgeryToken]
