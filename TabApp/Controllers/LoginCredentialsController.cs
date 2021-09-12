@@ -19,10 +19,72 @@ namespace TabApp.Controllers
         }
 
         // GET: LoginCredentials
-        public async Task<IActionResult> Index()
+        [Route("Users")]
+        public async Task<IActionResult> Index(string loginFilter)
         {
-            var dbContext = _context.LoginCredentials.Include(l => l.Person);
+            IQueryable<LoginCredentials> dbContext = _context.LoginCredentials.Include(l => l.Person);
+            
+
+            ViewBag.LoginFilter = loginFilter;
+
+
+            if (!String.IsNullOrEmpty(loginFilter))
+            {
+                dbContext = dbContext.Where(l => l.UserName.Contains(loginFilter));
+            }
+
             return View(await dbContext.ToListAsync());
+        }
+
+        // GET: LoginCredentials/Edit/5
+        public async Task<IActionResult> ChangeRole(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var loginCredentials = await _context.LoginCredentials.FindAsync(id);
+
+            if (loginCredentials == null)
+            {
+                return NotFound();
+            }
+            ViewData["ID"] = new SelectList(_context.Person, "ID", "Address", loginCredentials.ID);
+            return View(loginCredentials);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeRole(int id, [Bind("ID,UserName,Password")] LoginCredentials loginCredentials)
+        {
+            if (id != loginCredentials.ID)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(loginCredentials);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!LoginCredentialsExists(loginCredentials.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["ID"] = new SelectList(_context.Person, "ID", "Address", loginCredentials.ID);
+            return View(loginCredentials);
         }
 
         // GET: LoginCredentials/Details/5
