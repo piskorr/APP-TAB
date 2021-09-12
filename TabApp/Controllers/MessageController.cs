@@ -28,7 +28,7 @@ namespace TabApp.Controllers
         }
 
         // GET: Reply
-        public async Task<IActionResult> Reply(int? ID)
+        public async Task<IActionResult> Reply(uint? ID)
         {
             if (ID == null)
                 return RedirectToAction(nameof(Mailbox));
@@ -51,7 +51,7 @@ namespace TabApp.Controllers
 
 
         // GET: Message/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(uint? id)
         {
             if (id == null)
             {
@@ -108,10 +108,26 @@ namespace TabApp.Controllers
         }
 
         // GET: Message/Mailbox
-        public async Task<IActionResult> Mailbox()
+        public async Task<IActionResult> Mailbox(string FromFilter, string TitleFilter)
         {
+            ViewBag.FromFilter = FromFilter;
+            ViewBag.TitleFilter = TitleFilter;
+
             var name = User.Identity.Name;
-            var messages = await _context.Message.Include("Sender").Where(recv => recv.Addressee.LoginCredentials.UserName == name).ToListAsync();
+            var unfiltered_messages = _context.Message.Include("Sender").Where(recv => recv.Addressee.LoginCredentials.UserName == name);
+
+             if (!String.IsNullOrEmpty(FromFilter))
+             {
+                 unfiltered_messages = unfiltered_messages.Where(msg => msg.Addressee.LoginCredentials.UserName.Contains(FromFilter));
+             }
+             if (!String.IsNullOrEmpty(TitleFilter))
+             {
+                 unfiltered_messages = unfiltered_messages.Where(msg => msg.Title.Contains(TitleFilter));
+             }
+             unfiltered_messages = unfiltered_messages.OrderByDescending(m => m.Date);
+
+            var messages = await unfiltered_messages.ToListAsync();
+
             foreach (var msg in messages)
             {
                 msg.Sender = await _context.Person.Include("LoginCredentials").Where(p => p.ID == msg.Sender.ID).FirstOrDefaultAsync();
@@ -121,7 +137,7 @@ namespace TabApp.Controllers
             return View(messages);
         }
 
-        public async Task<IActionResult> ShowMessage(int? id)
+        public async Task<IActionResult> ShowMessage(uint? id)
         {
             if (id == null)
                 return RedirectToAction(nameof(Mailbox));
@@ -167,7 +183,7 @@ namespace TabApp.Controllers
             return View(messages);
         }
 
-        public async Task<IActionResult> ShowSentMessage(int? id)
+        public async Task<IActionResult> ShowSentMessage(uint? id)
         {
             if (id == null)
                 return RedirectToAction(nameof(Mailbox));
@@ -213,7 +229,7 @@ namespace TabApp.Controllers
         }
 
         // GET: Message/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(uint? id)
         {
             if (id == null)
             {
@@ -264,7 +280,7 @@ namespace TabApp.Controllers
         }
 
         // GET: Message/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(uint? id)
         {
             if (id == null)
             {
@@ -283,7 +299,7 @@ namespace TabApp.Controllers
         // POST: Message/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
+        public async Task<IActionResult> DeleteConfirmed(uint? id)
         {
             if (id == null)
                 return RedirectToAction(nameof(Mailbox));
