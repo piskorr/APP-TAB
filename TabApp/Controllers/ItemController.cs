@@ -32,7 +32,7 @@ namespace TabApp.Controllers
         // GET: Item
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Item.ToListAsync());
+            return View(await _context.Item.Include("Person").ToListAsync());
         }
 
         public async Task<IActionResult> SelectOwner(string Description, string SerialNumber, string NameFilter, string SurnameFilter)
@@ -79,6 +79,57 @@ namespace TabApp.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
+        }
+        
+        public async Task<IActionResult> RepairList(int? itemID)
+        {
+
+            if (itemID == null)
+            {
+                return NotFound();
+            }
+
+            var item = await _context.Item
+            .Include(i => i.Repair)
+            .FirstOrDefaultAsync(it => it.ID == itemID);
+
+            var repairs  = new List<Repair>();
+            foreach(var repair in item.Repair)
+            {
+                var tmpService =  await _context.Repair.Include(r => r.PickupCode).Include(r => r.RepairStatus).FirstOrDefaultAsync(r => r.ID == repair.ID);
+                repairs.Add(tmpService);
+            }
+
+            return View(repairs);
+
+            // if (!String.IsNullOrEmpty(StatusFilter))
+            // {
+            //     unfiltered_users = unfiltered_users.Where(u => u.Name.Contains(NameFilter));
+            // }
+            // if (!String.IsNullOrEmpty(SurnameFilter))
+            // {
+            //     unfiltered_users = unfiltered_users.Where(u => u.Surname.Contains(SurnameFilter));
+            // }
+            // if (!String.IsNullOrEmpty(SurnameFilter))
+            // {
+            //     unfiltered_users = unfiltered_users.Where(u => u.Surname.Contains(SurnameFilter));
+            // }
+            // if (!String.IsNullOrEmpty(SurnameFilter))
+            // {
+            //     unfiltered_users = unfiltered_users.Where(u => u.Surname.Contains(SurnameFilter));
+            // }
+            // if (!String.IsNullOrEmpty(SurnameFilter))
+            // {
+            //     unfiltered_users = unfiltered_users.Where(u => u.Surname.Contains(SurnameFilter));
+            // }
+            // if (!String.IsNullOrEmpty(SurnameFilter))
+            // {
+            //     unfiltered_users = unfiltered_users.Where(u => u.Surname.Contains(SurnameFilter));
+            // }
+            // unfiltered_users = unfiltered_users.OrderBy(m => m.Surname);
+
+            // var users = await unfiltered_users.ToListAsync();
+
         }
         public IActionResult AddNewPerson(string Description, string SerialNumber)
         {
