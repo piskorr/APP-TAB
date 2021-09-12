@@ -1,14 +1,16 @@
 @model TabApp.Models.Person
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Add person with item";
 }
 
-<h2>Enroll new person</h2>
+<h2>Add person with item</h2>
 
 <div class="row">
     <div class="col-md-6">
-        <form asp-action="Create">
+
+        <h5>Person data</h5>
+        <form asp-action="AddNewPerson">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -36,13 +38,33 @@
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-outline-success" />
-                <a class="btn btn-outline-danger"  asp-action="Index">Back to List</a>
+                <input asp-for="Role" type="hidden" value="User" class="form-control">
+            </div>
+
+            <h5>Item data</h5>
+            <div class="form-group">
+                <label aclass="control-label">Serial number</label>
+                <input value="@ViewBag.SerialNumber" name="SerialNumber" id="SerialNumber" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Description</label>
+                <input value="@ViewBag.Description" name="Description" id="Description" class="form-control" readonly>
+            </div>
+
+            <div class="form-group">
+                <input asp-for="Role" type="hidden" value="User" class="form-control">
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create item and person" class="btn btn-outline-success" style="margin-right:10px;"/>
+                <a class="btn btn-outline-danger" asp-action="Index">Back to List</a>
             </div>
         </form>
     </div>
 </div>
 
+<div>
+    
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
