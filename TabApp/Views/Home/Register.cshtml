@@ -9,59 +9,40 @@
                  style="background-color:rgb(52,58,64); box-shadow: 0 8px 6px -6px black; margin-top:30px; margin-bottom:30px;">
                 <div class="card-body">
                     <form asp-action="Register" autocomplete="off" method="POST">
-
                         <h5 style="color:white; text-decoration:bold;"> Register </h5>
-
                         <br />
-
                         <div class="form-group">
                             <input asp-for="Person.Role" type="hidden" value="User" class="form-control">
                         </div>
-
                         <div class="form-group">
-                            <label asp-for="UserName" class="control-label"></label>
                             <input asp-for="UserName" class="form-control" placeholder="Login">
                             <span asp-validation-for="UserName" class="text-danger"></span>
                         </div>
-
-                        <div class="form-group">
-                            <label asp-for="Password" class="control-label"></label>
-                            <input asp-for="Password" class="form-control" placeholder="Password">
+                        <div class="form-group">                           
+                            <input asp-for="Password" class="form-control" type="password" placeholder="Password">
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
-
-                        <div class="form-group">
-                            <label asp-for="Person.Email" class="control-label"></label>
+                        <div class="form-group">                            
                             <input asp-for="Person.Email" class="form-control" placeholder="Your@Email.com">
                             <span asp-validation-for="Person.Email" class="text-danger"></span>
                         </div>
-
-                        <div class="form-group">
-                            <label asp-for="Person.Name" class="control-label"></label>
+                        <div class="form-group">                            
                             <input asp-for="Person.Name" class="form-control" placeholder="First name">
                             <span asp-validation-for="Person.Name" class="text-danger"></span>
                         </div>
-
-                        <div class="form-group">
-                            <label asp-for="Person.Surname" class="control-label"></label>
+                        <div class="form-group">                            
                             <input asp-for="Person.Surname" class="form-control" placeholder="Last name">
                             <span asp-validation-for="Person.Surname" class="text-danger"></span>
                         </div>
-
-                        <div class="form-group">
-                            <label asp-for="Person.Address" class="control-label"></label>
+                        <div class="form-group">                            
                             <input asp-for="Person.Address" class="form-control" placeholder="Address">
                             <span asp-validation-for="Person.Address" class="text-danger"></span>
                         </div>
-
                         <div class="form-group">
-                            <label asp-for="Person.PhoneNumber" class="control-label"></label>
                             <input asp-for="Person.PhoneNumber" class="form-control" placeholder="Phone number">
                             <span asp-validation-for="Person.PhoneNumber" class="text-danger"></span>
                         </div>
-
                         <button type="submit" class="btn btn-outline-success my-2 my-sm-0"> Register </button>
-
                     </form>
                 </div>
             </div>

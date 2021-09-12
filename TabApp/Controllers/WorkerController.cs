@@ -82,12 +82,11 @@ namespace TabApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(//todo bind all to person?
+        public async Task<IActionResult> Register(
             [Bind("Name,Surname,Address,Email,Role,PhoneNumber")] Person person,
             [Bind("Earnings,PESEL,AccountNumber,JobPosition")] Worker worker,
             [Bind("UserName,Password")] LoginCredentials loginCredentials)
         {
-
             if (ModelState.IsValid)
             {
                 var email = await _context.Person

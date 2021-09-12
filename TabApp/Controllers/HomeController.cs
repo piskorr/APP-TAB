@@ -8,9 +8,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using System;
-using TabApp.Enums;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace TabApp.Controllers
 {
@@ -40,9 +39,15 @@ namespace TabApp.Controllers
             return View();
         }
 
-        public IActionResult Profile()
+
+        public async Task<IActionResult> Profile()
         {
-            return View();
+            var currentUser = await _context.Person
+                .Include("LoginCredentials")
+                .Where(u => u.LoginCredentials.UserName == User.Identity.Name)
+                .FirstAsync();
+
+            return View(currentUser);
         }
 
         [HttpGet("login")]

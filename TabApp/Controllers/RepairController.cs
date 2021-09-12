@@ -43,28 +43,67 @@ namespace TabApp.Controllers
 
             return View(repair);
         }
-
-        // GET: Repair/Create
-        public IActionResult Create()
+        public IActionResult Add()
         {
-            ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description");
             return View();
         }
+
+        // GET: Repair/Create/itemId
+        public async Task<IActionResult> Create(int? itemID)
+        {
+            if (itemID != null)
+            {
+                var item = await _context.Item.FindAsync(itemID);
+                if (item == null)
+                {
+                    return NotFound();
+                }
+                ViewBag.ItemID = itemID;
+                ViewBag.ItemSerialNumber = item.SerialNumber;
+                ViewBag.ItemDescription = item.Description;
+            }
+
+           //ViewData["StatusList"] = new SelectList(_context.RepairStatus, "ID", "Status");
+            return View();
+        }
+
+  public int ID { get; set; }
+
+        public string Status { get; set; }
 
         // POST: Repair/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,AdmissionDate,IssueDate,Cost,Warranty,Status,PickupCode,ItemID")] Repair repair)
+        public async Task<IActionResult> Create(int? itemID, [Bind("AdmissionDate,IssueDate,Cost,Warranty")] Repair repair, 
+        [Bind("SerialNumber,Description")] Item item)
         {
             if (ModelState.IsValid)
             {
+                if(itemID != null)
+                {
+                    repair.ItemID = itemID;
+                }  
+                else
+                {
+                    _context.Add(item);
+                    await _context.SaveChangesAsync();
+                    repair.ItemID = item.ID;
+                }
+
+                var repairStatus = await _context.RepairStatus.FindAsync(1);
+                repair.RepairStatus = repairStatus;
+
                 _context.Add(repair);
                 await _context.SaveChangesAsync();
+
+                var pickupCode = await _context.PickupCodes.FindAsync(repair.ID);
+                repair.PickupCode = pickupCode;
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description", repair.ItemID);
             return View(repair);
         }
 
