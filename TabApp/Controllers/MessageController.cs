@@ -35,16 +35,16 @@ namespace TabApp.Controllers
 
             var msg = await _context.Message.Where(msg => msg.ID == ID).Include("Sender").FirstOrDefaultAsync();
 
-            if(msg == null)
+            if (msg == null)
                 return RedirectToAction(nameof(AddresseeNotFound));
 
             var login = await _context.LoginCredentials.Where(l => l.Person.ID == msg.Sender.ID).FirstOrDefaultAsync();
 
-            if(login == null)
+            if (login == null)
                 return RedirectToAction(nameof(AddresseeNotFound));
 
             ViewBag.receiver = login.UserName;
-            ViewBag.msgTitle = "re: "+msg.Title;
+            ViewBag.msgTitle = "re: " + msg.Title;
 
             return View("Create");
         }
@@ -64,7 +64,7 @@ namespace TabApp.Controllers
             {
                 return NotFound();
             }
-            
+
             return View(message);
         }
         // GET: Message/AddresseeNotFound
@@ -86,10 +86,10 @@ namespace TabApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(string recv, [Bind("Content, Title")] Message message)
-        {   
+        {
             if (ModelState.IsValid)
             {
-                if(recv == "" || recv == null)
+                if (recv == "" || recv == null)
                     return RedirectToAction(nameof(AddresseeNotFound));
 
                 var addr = _context.Person.Where(p => p.LoginCredentials.UserName == recv).FirstOrDefaultAsync();
@@ -116,15 +116,15 @@ namespace TabApp.Controllers
             var name = User.Identity.Name;
             var unfiltered_messages = _context.Message.Include("Sender").Where(recv => recv.Addressee.LoginCredentials.UserName == name);
 
-             if (!String.IsNullOrEmpty(FromFilter))
-             {
-                 unfiltered_messages = unfiltered_messages.Where(msg => msg.Addressee.LoginCredentials.UserName.Contains(FromFilter));
-             }
-             if (!String.IsNullOrEmpty(TitleFilter))
-             {
-                 unfiltered_messages = unfiltered_messages.Where(msg => msg.Title.Contains(TitleFilter));
-             }
-             unfiltered_messages = unfiltered_messages.OrderByDescending(m => m.Date);
+            if (!String.IsNullOrEmpty(FromFilter))
+            {
+                unfiltered_messages = unfiltered_messages.Where(msg => msg.Addressee.LoginCredentials.UserName.Contains(FromFilter));
+            }
+            if (!String.IsNullOrEmpty(TitleFilter))
+            {
+                unfiltered_messages = unfiltered_messages.Where(msg => msg.Title.Contains(TitleFilter));
+            }
+            unfiltered_messages = unfiltered_messages.OrderByDescending(m => m.Date);
 
             var messages = await unfiltered_messages.ToListAsync();
 
@@ -163,15 +163,15 @@ namespace TabApp.Controllers
             var name = User.Identity.Name;
             var unfiltered_messages = _context.Message.Include("Addressee").Where(send => send.Sender.LoginCredentials.UserName == name);
 
-             if (!String.IsNullOrEmpty(FromFilter))
-             {
-                 unfiltered_messages = unfiltered_messages.Where(msg => msg.Addressee.LoginCredentials.UserName.Contains(FromFilter));
-             }
-             if (!String.IsNullOrEmpty(TitleFilter))
-             {
-                 unfiltered_messages = unfiltered_messages.Where(msg => msg.Title.Contains(TitleFilter));
-             }
-             unfiltered_messages = unfiltered_messages.OrderByDescending(m => m.Date);
+            if (!String.IsNullOrEmpty(FromFilter))
+            {
+                unfiltered_messages = unfiltered_messages.Where(msg => msg.Addressee.LoginCredentials.UserName.Contains(FromFilter));
+            }
+            if (!String.IsNullOrEmpty(TitleFilter))
+            {
+                unfiltered_messages = unfiltered_messages.Where(msg => msg.Title.Contains(TitleFilter));
+            }
+            unfiltered_messages = unfiltered_messages.OrderByDescending(m => m.Date);
 
             var messages = await unfiltered_messages.ToListAsync();
             foreach (var msg in messages)
