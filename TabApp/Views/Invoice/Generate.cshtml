@@ -11,7 +11,7 @@
             <td>
                 <div id="logo">
                     <img src="~/graphics/logo.png" width="30" height="30" class="d-inline-block align-top" alt="Logo" style="float:left; margin-right:10px;" />
-                    <h3 style="float:left;">Faktura nr @Html.DisplayFor(model => model.ID)</h3>
+                    <h3 style="float:left; margin-right:20px;">Invoice no. @Html.DisplayFor(model => model.ID)</h3>
                     <button class="btn btn-outline-success my-2 my-sm-0 d-print-none text-right" style="float:right;" onclick="window.print();return false;">
                         Print
                     </button>
@@ -20,15 +20,15 @@
         </tr>
         <tr>
             <td>
-                <div id="place">
+                <div id="place" style="clear:both;">
                     <table>
                         <tr>
-                            <th> Data wystawienia </th>
+                            <th> Issue date </th>
                             <td> @Html.DisplayFor(model => model.InvoiceDate) </td>
                         </tr>
                         <tr>
-                            <th> Miejsce wystawienia </th>
-                            <td> ** pleceholder ** </td>
+                            <th> Issue place </th>
+                            <td> Gliwice </td>
                         </tr>
                     </table>
                 </div>
@@ -38,8 +38,8 @@
 
     <hr />
 
-    <div id="sender" style="width: 50%; float:left;">
-        <h5>Sprzedawca</h5>
+    <div id="issuer" style="width: 50%; float:left; margin-bottom:25px;">
+        <h5>Issuer</h5>
         <table>
             <tr>
                 <td> ** nazwa ** </td>
@@ -60,7 +60,7 @@
     </div>
 
     <div id="receiver" style="width: 50%; float:right; ">
-        <h5>Nabywca</h5>
+        <h5>Receiver</h5>
         <table>
             <tr>
                 <td> ** nazwa ** </td>
@@ -82,7 +82,7 @@
 
     <br />
 
-    <div id="services" style="margin-top:25px;">
+    <div id="services" style="margin-top:25px; clear:both;">
         <table style="width:100%;">
             <tr style="text-decoration:underline;">
                 <th>No.</th>
