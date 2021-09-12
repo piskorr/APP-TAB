@@ -37,10 +37,39 @@ namespace TabApp.Controllers
         }
 
         public IActionResult Index()
-        {   
+        {
             return View();
         }
-        
+        public IActionResult WorkerRaport()
+        {
+            var dictionary = new Dictionary<Person,int>();
+            var users = _context.Person.ToList();
+            foreach(var user in users)
+            {
+                dictionary.Add(user, 0);
+            }
+            var services = _context.Service.ToArray();
+            foreach(var service in services)
+            {
+                if(dictionary.ContainsKey(service.Person))
+                {
+                    dictionary[service.Person]=+1;
+                }
+            }
+            var list = new List<KeyValuePair<Person, int>>();
+            foreach(var entity in dictionary)
+            {
+                if(entity.Value!=0)
+                {
+                    list.Add(new KeyValuePair<Person, int>(entity.Key,entity.Value));
+                }
+            }
+            return View(list);
+        }
+        public IActionResult RepairRaport()
+        {
+            return View();
+        }
 
         private bool ServiceExists(int id)
         {
