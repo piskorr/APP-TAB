@@ -61,6 +61,7 @@
                 @Html.DisplayFor(modelItem => item.Item.Description)
             </td>
             <td>
+                <a asp-controller="Service" asp-action="Index" asp-route-repairID="@item.ID">Show services</a> | 
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>

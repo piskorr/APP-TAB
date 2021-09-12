@@ -64,13 +64,13 @@ namespace TabApp.Controllers
                 }
                 ViewBag.ItemID = itemID;
                 ViewBag.ItemSerialNumber = item.SerialNumber;
-                ViewBag.ItemDescription = item.Description;
+                ViewBag.ItemDescription = item.Description; 
             }
 
             return View();
         }
 
-  public int ID { get; set; }
+
 
         public string Status { get; set; }
 
@@ -155,6 +155,7 @@ namespace TabApp.Controllers
                     var oldRepair = await _context.Repair
                     .Include(r => r.Item)
                     .Include(r => r.PickupCode)
+                    .Include(r => r.Service)
                     .FirstOrDefaultAsync(m => m.ID == id);
                     
                     var repairStatus = await _context.RepairStatus.FindAsync(repairStatusID);
@@ -162,8 +163,25 @@ namespace TabApp.Controllers
                     oldRepair.AdmissionDate = repair.AdmissionDate;
                     oldRepair.Warranty = repair.Warranty;
                     oldRepair.RepairStatus = repairStatus;
+
                     if(repairStatus.Status == RepairStatuses.Issued)
+                    {
                         oldRepair.IssueDate = DateTime.Today;
+                        if(oldRepair.Service != null)
+                        {
+                            oldRepair.Cost = 0;
+                            foreach(var service in oldRepair.Service)
+                            {
+                                var tmpService =  await _context.Service.Include(s => s.PriceList).FirstOrDefaultAsync(s => s.ID == service.ID); 
+                                if(tmpService != null) 
+                                    oldRepair.Cost += tmpService.PriceList.Price;
+
+                                if(tmpService.PartsCost != null) 
+                                   oldRepair.Cost += tmpService.PartsCost;                       
+                            }
+                        }
+                        
+                    }
 
                     _context.Update(oldRepair);
                     await _context.SaveChangesAsync();
@@ -211,6 +229,7 @@ namespace TabApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var repair = await _context.Repair.FindAsync(id);
+            _context.Service.RemoveRange(_context.Service.Where(x => x.Repair == repair));
             _context.Repair.Remove(repair);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

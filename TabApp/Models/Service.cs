@@ -11,6 +11,9 @@ namespace TabApp.Models
         [DataType(DataType.Date)]
         public DateTime WarrantyDate { get; set; }
 
+        [DataType(DataType.Currency)]
+        public int? PartsCost { get; set; } 
+
         public Repair Repair { get; set; }
 
         public Person Person { get; set; }

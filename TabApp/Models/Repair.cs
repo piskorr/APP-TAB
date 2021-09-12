@@ -16,7 +16,7 @@ namespace TabApp.Models
         public DateTime? IssueDate { get; set; }
 
         [DataType(DataType.Currency)]
-        public int Cost { get; set; }
+        public int? Cost { get; set; }
 
         public bool Warranty {get; set;}      
 
