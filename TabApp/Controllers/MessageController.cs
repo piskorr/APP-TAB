@@ -67,7 +67,7 @@ namespace TabApp.Controllers
             
             return View(message);
         }
-        // GET: Message/Create
+        // GET: Message/AddresseeNotFound
         public IActionResult AddresseeNotFound()
         {
             return View();
@@ -100,6 +100,7 @@ namespace TabApp.Controllers
 
                 message.Addressee = addr.Result;
                 message.Sender = sender.Result;
+                message.Date = DateTime.Now;
                 _context.Add(message);
                 await _context.SaveChangesAsync();
             }
