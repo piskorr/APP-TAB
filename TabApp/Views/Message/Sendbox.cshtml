@@ -15,7 +15,7 @@
         <thead>
             <tr>
                 <th>
-                    From
+                    To
                 </th>
                 <th>
                     Title
@@ -46,7 +46,7 @@
             @foreach (var message in Model) {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelMessage => message.Sender.LoginCredentials.UserName)
+                    @Html.DisplayFor(modelMessage => message.Addressee.LoginCredentials.UserName)
                 </td>
                 <td>
                     <a asp-action="ShowSentMessage" asp-route-id="@message.ID">@Html.DisplayFor(modelMessage => message.Title)</a>

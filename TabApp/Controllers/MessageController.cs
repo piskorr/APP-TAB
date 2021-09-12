@@ -151,22 +151,22 @@ namespace TabApp.Controllers
             return View(messages);
         }
 
-        // public async Task<IActionResult> ShowMessage(int? id)
-        // {
-        //     if (id == null)
-        //         return RedirectToAction(nameof(Mailbox));
+        public async Task<IActionResult> ShowSentMessage(int? id)
+        {
+            if (id == null)
+                return RedirectToAction(nameof(Mailbox));
 
-        //     var currentUserID = await _context.Person.Where(u => u.LoginCredentials.UserName == User.Identity.Name).Select(p => p.ID).FirstAsync();
+            var currentUserID = await _context.Person.Where(u => u.LoginCredentials.UserName == User.Identity.Name).Select(p => p.ID).FirstAsync();
 
-        //     var message = await _context.Message.Include("Sender").Include("Addressee").Where(msg => msg.ID == id).FirstAsync();
+            var message = await _context.Message.Include("Sender").Include("Addressee").Where(msg => msg.ID == id).FirstAsync();
 
-        //     message.Sender = await _context.Person.Include("LoginCredentials").Where(p => p.ID == message.Sender.ID).FirstOrDefaultAsync();
+            message.Addressee = await _context.Person.Include("LoginCredentials").Where(p => p.ID == message.Addressee.ID).FirstOrDefaultAsync();
 
-        //     if (currentUserID != message.Addressee.ID)
-        //         return Unauthorized();
+            if (currentUserID != message.Sender.ID)
+                return Unauthorized();
 
-        //     return View(new[] { message });
-        // }
+            return View(new[] { message });
+        }
 
         // GET: Message/SendToWorker
         public IActionResult SendToWorker()
