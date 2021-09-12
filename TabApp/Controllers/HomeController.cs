@@ -35,11 +35,13 @@ namespace TabApp.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult Services()
         {
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult PickupCodes()
         {
             return View();

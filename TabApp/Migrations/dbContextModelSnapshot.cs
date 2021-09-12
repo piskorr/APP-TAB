@@ -202,7 +202,7 @@ namespace TabApp.Migrations
                     b.Property<DateTime>("AdmissionDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Cost")
+                    b.Property<int?>("Cost")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("IssueDate")
@@ -250,6 +250,9 @@ namespace TabApp.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("PartsCost")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("PersonID")

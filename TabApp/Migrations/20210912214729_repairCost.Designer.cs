@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TabApp.Migrations
 {
     [DbContext(typeof(dbContext))]
-    [Migration("20210912205907_DbChanges2")]
-    partial class DbChanges2
+    [Migration("20210912214729_repairCost")]
+    partial class repairCost
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -101,6 +101,8 @@ namespace TabApp.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(254)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Date")
@@ -108,6 +110,11 @@ namespace TabApp.Migrations
 
                     b.Property<int?>("SenderID")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("ID");
 
