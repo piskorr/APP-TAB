@@ -1,14 +1,15 @@
 @model IEnumerable<TabApp.Models.Message>
 
     @{
-    ViewData["Title"] = "Mailbox";
+    ViewData["Title"] = "Outbox";
     }
 
-    <h2>Mailbox</h2>
+    <h2>Sent by me</h2>
 
     <p>
         <a asp-action="Create" class="btn btn-outline-primary my-2 my-sm-0" style="padding-right:15px;">Send message</a>
-        <a asp-action="SendToWorker" class="btn btn-outline-primary my-2 my-sm-0">Contact Support</a>
+        <a asp-action="SendToWorker" class="btn btn-outline-primary my-2 my-sm-0" style="padding-right:15px;">Contact Support</a>
+        <a asp-action="Mailbox" class="btn btn-outline-danger my-2 my-sm-0">Back to Mailbox</a>
     </p>
 
     <table class="table">
