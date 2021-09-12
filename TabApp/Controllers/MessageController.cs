@@ -28,19 +28,25 @@ namespace TabApp.Controllers
         }
 
         // GET: Reply
-        public async Task<IActionResult> Reply(int? messageID)
+        public async Task<IActionResult> Reply(int? ID)
         {
-            if (messageID == null)
+            if (ID == null)
                 return RedirectToAction(nameof(Mailbox));
 
-            var msg = _context.Message.Where(msg => msg.ID == messageID).FirstOrDefaultAsync();
-            
+            var msg = await _context.Message.Where(msg => msg.ID == ID).Include("Sender").FirstOrDefaultAsync();
+
             if(msg == null)
-                return RedirectToAction(nameof(Mailbox));
+                return RedirectToAction(nameof(AddresseeNotFound));
 
-            ViewBag.receiver = "kutas";
+            var login = await _context.LoginCredentials.Where(l => l.Person.ID == msg.Sender.ID).FirstOrDefaultAsync();
 
-            return View("Create", msg);
+            if(login == null)
+                return RedirectToAction(nameof(AddresseeNotFound));
+
+            ViewBag.receiver = login.UserName;
+            ViewBag.msgTitle = "re: "+msg.Title;
+
+            return View("Create");
         }
 
 
@@ -58,13 +64,20 @@ namespace TabApp.Controllers
             {
                 return NotFound();
             }
-
+            
             return View(message);
+        }
+        // GET: Message/Create
+        public IActionResult AddresseeNotFound()
+        {
+            return View();
         }
 
         // GET: Message/Create
         public IActionResult Create()
         {
+            ViewBag.msgTitle = "";
+            ViewBag.receiver = "";
             return View();
         }
         // POST: Message/Create
@@ -73,12 +86,12 @@ namespace TabApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(string recv, [Bind("Content, Title")] Message message)
-        {
+        {   
             if (ModelState.IsValid)
             {
                 var addr = _context.Person.Where(p => p.LoginCredentials.UserName == recv).FirstOrDefaultAsync();
                 if (addr.Result == null)
-                    return NotFound();
+                    return RedirectToAction(nameof(AddresseeNotFound));
 
                 var sender = _context.Person.FirstOrDefaultAsync(p => p.LoginCredentials.UserName == User.Identity.Name);
 
