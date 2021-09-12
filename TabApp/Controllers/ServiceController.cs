@@ -102,6 +102,8 @@ namespace TabApp.Controllers
                 var priceList = await _context.PriceList.FindAsync(priceListID);
                 service.PriceList = priceList;
 
+                service.Person = await _context.Person.Include("LoginCredentials").Where(u => u.LoginCredentials.UserName == User.Identity.Name).FirstAsync();
+
                 _context.Add(service);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index), new { repairID });
