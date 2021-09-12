@@ -12,6 +12,8 @@ using System;
 using TabApp.Enums;
 using Microsoft.EntityFrameworkCore;
 
+//kupka
+
 namespace TabApp.Controllers
 {
     public class HomeController : Controller
