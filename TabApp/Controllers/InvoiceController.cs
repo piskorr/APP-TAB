@@ -62,7 +62,6 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
-
             var repair = await _context.Repair
             .Include("Service")
             .Include("Item.Person")
@@ -82,7 +81,7 @@ namespace TabApp.Controllers
 
             repair.Service = services;
             ViewData["NIP"] = invoice.NIP;
-            ViewData["InvoiceDate"] = invoice.InvoiceDate.ToString();
+            ViewData["InvoiceDate"] = invoice.InvoiceDate.ToString("dd/MM/yyyy");
             return View(repair);
         }
 
