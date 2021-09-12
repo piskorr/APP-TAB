@@ -32,17 +32,19 @@
 
         <tbody>
             <tr>
+                <form asp-controller="Message" asp-action="Mailbox">
                 <th>
-                    <input type=text name="FromFilter">
+                    <input type=text name="FromFilter" value="@ViewBag.FromFilter">
                 </th>
                 <th>
-                    <input type=text name="TitleFilter">
+                    <input type=text name="TitleFilter" value="@ViewBag.TitleFilter">
                 </th>
                 <th>
                 </th>
                 <th>
                     <button type="submit" class="btn btn-outline-primary my-2 my-sm-0"> Filter </button>
                 </th>
+                </form>
             </tr>
             @foreach (var message in Model) {
             <tr>
