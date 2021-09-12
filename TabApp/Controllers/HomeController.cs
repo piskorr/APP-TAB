@@ -11,6 +11,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Linq;
+using TabApp.Enums;
 
 namespace TabApp.Controllers
 {
@@ -45,6 +50,29 @@ namespace TabApp.Controllers
             return View();
         }
 
+        [HttpPost]
+        public IActionResult PickupCodes(string Code)
+        {
+            if (!string.IsNullOrEmpty(Code))
+            {
+                var repair =  _context.Repair
+                    .Include("RepairStatus")
+                    .Include("PickupCode")
+                    .Where(u => u.PickupCode.Value.Equals(Code))
+                    .FirstOrDefault();
+
+                if (repair == null)
+                {
+                    ViewData["Error"] = "Invalid code. Try again.";
+                    return View();
+                }
+
+                ViewData["Status"] = repair.RepairStatus.Status;
+                return View();
+            }
+
+            return View();
+        }
 
         public async Task<IActionResult> Profile()
         {
