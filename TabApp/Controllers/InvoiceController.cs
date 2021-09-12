@@ -42,21 +42,30 @@ namespace TabApp.Controllers
             return View(invoice);
         }
 
-        public async Task<IActionResult> Generate(int? id)
+        
+        public async Task<IActionResult> Generate(int? repairId, int? invoiceId)
         {
-            if (id == null)
+            if (repairId == null || invoiceId == null)
             {
                 return NotFound();
             }
+
+            var repair = await _context.Repair
+                .Include("Service")
+                .Include("Item.Person")
+                .FirstOrDefaultAsync(r => r.ID == repairId);
 
             var invoice = await _context.Invoice
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (invoice == null)
+                .FirstOrDefaultAsync(i => i.ID == invoiceId);
+
+            if (repair == null || invoice == null)
             {
                 return NotFound();
             }
 
-            return View(invoice);
+            ViewData["NIP"] = invoice.NIP;
+            ViewData["InvoiceDate"] = invoice.InvoiceDate.ToString();
+            return View(repair);
         }
 
         // GET: Invoice/Create
@@ -129,7 +138,7 @@ namespace TabApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(invoice);
+            return View();
         }
 
         // GET: Invoice/Delete/5

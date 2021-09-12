@@ -1,7 +1,9 @@
-@model TabApp.Models.Invoice
+@model TabApp.Models.Repair
 
 @{
     ViewData["Title"] = "Generate";
+    var nip = ViewData["NIP"] as string;
+    var date = ViewData["InvoiceDate"] as string;
 }
 
 <div id="container" style="margin: 0mm;">
@@ -24,7 +26,7 @@
                     <table>
                         <tr>
                             <th> Issue date </th>
-                            <td> @Html.DisplayFor(model => model.InvoiceDate) </td>
+                            <td>  </td>
                         </tr>
                         <tr>
                             <th> Issue place </th>
@@ -72,7 +74,7 @@
                 <td> ** adres2 ** </td>
             </tr>
             <tr>
-                <td> @Html.DisplayFor(model => model.NIP) </td>
+
             </tr>
             <tr>
                 <td> ** tel ** </td>
