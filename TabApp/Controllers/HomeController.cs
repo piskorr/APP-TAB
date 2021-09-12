@@ -10,15 +10,10 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Linq;
-using TabApp.Enums;
 
 namespace TabApp.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -51,6 +46,7 @@ namespace TabApp.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult PickupCodes(string Code)
         {
             if (!string.IsNullOrEmpty(Code))
@@ -147,6 +143,7 @@ namespace TabApp.Controllers
         }
 
         [HttpGet("login")]
+        [AllowAnonymous]
         public IActionResult Login(string returnUrl)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -154,6 +151,7 @@ namespace TabApp.Controllers
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Validate(string username, string password, string returnUrl)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -191,6 +189,7 @@ namespace TabApp.Controllers
         }
 
         [HttpGet("register")]
+        [AllowAnonymous]
         public IActionResult Register(string returnUrl)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -198,13 +197,15 @@ namespace TabApp.Controllers
         }
 
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register([Bind("ID,UserName,Password,Name,Surname,Address,Email,PhoneNumber")] LoginCredentials loginCredentials, Person person)
         {
             
             if (ModelState.IsValid)
             {
                 var email = await _context.Person
-                .FirstOrDefaultAsync(l => l.Email.Equals(person.Email));
+                    .Include("LoginCredentials")
+                    .FirstOrDefaultAsync(l => l.Email.Equals(person.Email));
 
                 var login = await _context.LoginCredentials
                 .FirstOrDefaultAsync(l => l.UserName.Equals(loginCredentials.UserName));
@@ -217,6 +218,14 @@ namespace TabApp.Controllers
 
                 if (email != null)
                 {
+                    if(email.LoginCredentials == null )
+                    {
+                        loginCredentials.ID = email.ID;
+                        _context.Add(loginCredentials);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(RegisteredExisting));
+                    }
+
                     TempData["Error"] = "Email is taken!";
                     return View();
                 }
@@ -234,12 +243,19 @@ namespace TabApp.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        public IActionResult RegisteredExisting(Person person)
+        {
+            return View();
+        }
+
         public IActionResult ForgotPassword()
         {
             return View();
         }
 
         [HttpGet("denied")]
+        [AllowAnonymous]
         public IActionResult Denied()
         {
             return View();

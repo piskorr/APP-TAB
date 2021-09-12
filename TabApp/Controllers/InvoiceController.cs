@@ -2,13 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using TabApp.Enums;
 using TabApp.Models;
 
 namespace TabApp.Controllers
 {
+    [Authorize(Policy = Policies.EmployeePolicy)]
     public class InvoiceController : Controller
     {
         private readonly dbContext _context;

@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TabApp.Models;
 using TabApp.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TabApp.Controllers
 {
+    [Authorize]
     public class RepairController : Controller
     {
         private readonly dbContext _context;

@@ -26,7 +26,7 @@
                     <table>
                         <tr>
                             <th> Issue date </th>
-                            <td>  </td>
+                            <td> @date</td>
                         </tr>
                         <tr>
                             <th> Issue place </th>
@@ -44,19 +44,16 @@
         <h5>Issuer</h5>
         <table>
             <tr>
-                <td> ** nazwa ** </td>
+                <td> Name : @Html.DisplayFor(model => model.Invoice.Person.Name) </td>
             </tr>
             <tr>
-                <td> ** adres1 ** </td>
+                <td> Address :  @Html.DisplayFor(model => model.Invoice.Person.Address)</td>
             </tr>
             <tr>
-                <td> ** adres2 ** </td>
+                <td> NIP : @Html.DisplayFor(model => model.Invoice.NIP) </td>
             </tr>
             <tr>
-                <td> ** nip ** </td>
-            </tr>
-            <tr>
-                <td> ** tel ** </td>
+                <td> Phone : @Html.DisplayFor(model => model.Invoice.Person.PhoneNumber) </td>
             </tr>
         </table>
     </div>
@@ -65,19 +62,16 @@
         <h5>Receiver</h5>
         <table>
             <tr>
-                <td> ** nazwa ** </td>
+                <td> Name : @Html.DisplayFor(model => model.Invoice.Person.Name) </td>
             </tr>
             <tr>
-                <td> ** adres1 ** </td>
+                <td> Address :  @Html.DisplayFor(model => model.Invoice.Person.Address) </td>
             </tr>
             <tr>
-                <td> ** adres2 ** </td>
+                <td> NIP : @Html.DisplayFor(model => model.Invoice.NIP) </td>
             </tr>
             <tr>
-
-            </tr>
-            <tr>
-                <td> ** tel ** </td>
+                <td> Phone : @Html.DisplayFor(model => model.Invoice.Person.PhoneNumber) </td>
             </tr>
         </table>
     </div>

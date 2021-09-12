@@ -12,6 +12,7 @@ using TabApp.Models;
 
 namespace TabApp.Controllers
 {
+    [Authorize]
     public class MessageController : Controller
     {
         private readonly dbContext _context;
