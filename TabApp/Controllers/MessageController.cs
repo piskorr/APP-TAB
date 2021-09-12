@@ -27,6 +27,13 @@ namespace TabApp.Controllers
             return View(await _context.Message.ToListAsync());
         }
 
+        // GET: Reply
+        public async Task<IActionResult> Reply(int? messageID)
+        {
+            return View(await _context.Message.ToListAsync());
+        }
+    
+
         // GET: Message/Details/5
         public async Task<IActionResult> Details(int? id)
         {
