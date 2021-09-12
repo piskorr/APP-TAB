@@ -8,31 +8,29 @@
 
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <div class="col-lg-6">
+        <form asp-action="SendToWorker">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <input type="text" value="@ViewBag.receiver"/>
+                <label asp-for="Addressee" class="control-label"> <span style="color:red;">NWM CO TO </span></label>
+                <input type="text" value="@ViewBag.receiver" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
             </div>
             <div class="form-group">
                 <label asp-for="Content" class="control-label"></label>
-                <input asp-for="Content" class="form-control" />
-                <span asp-validation-for="Content" class="text-danger"></span>
+                <textarea asp-for="Content" class="form-control" rows="5" cols="50" maxlength="255"></textarea>
             </div>
+
             <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Send Message" class="btn btn-outline-success" style="margin-right:10px;" />
+                <a asp-action="Mailbox" class="btn btn-outline-danger" style="margin-right:10px;">Back to Mailbox</a>
+                <a asp-action="Index" class="btn btn-outline-danger">Back to Messages</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
