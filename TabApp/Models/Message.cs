@@ -18,7 +18,7 @@ namespace TabApp.Models
         public String Content { get; set; }
 
 
-        [DataType(DataType.Date)]
+        [DataType(DataType.DateTime)]
         public DateTime Date { get; set; }
 
         public Person Sender { get; set; }
