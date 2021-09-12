@@ -230,8 +230,11 @@ namespace TabApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var repair = await _context.Repair.FindAsync(id);
+            var repair = await _context.Repair
+            .Include("Invoice")
+            .FirstOrDefaultAsync(m => m.ID == id);
             _context.Service.RemoveRange(_context.Service.Where(x => x.Repair == repair));
+            _context.Invoice.Remove(repair.Invoice);
             _context.Repair.Remove(repair);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
