@@ -12,7 +12,7 @@
         <table class="table" style="width:40%;">
             <tr>
                 <th>From</th>
-                <td>@Html.DisplayFor(modelMessage => message.Sender.Name)</td>
+                <td>@Html.DisplayFor(modelMessage => message.Sender.LoginCredentials.UserName)</td>
             </tr>
             <tr>
                 <th>Received</th>
