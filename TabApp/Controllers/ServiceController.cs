@@ -21,26 +21,45 @@ namespace TabApp.Controllers
         }
 
         // GET: Service
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? repairID)
         {
-            return View(await _context.Service.ToListAsync());
+            if (repairID == null)
+            {
+                return NotFound();
+            }
+            
+            var repair = await _context.Repair
+            .Include(r => r.Service)
+            .Include(r => r.PickupCode)
+            .FirstOrDefaultAsync(m => m.ID == repairID);       
+
+            var services  = new List<Service>();
+            foreach(var service in repair.Service)
+            {
+                var tmpService =  await _context.Service.Include(s => s.PriceList).FirstOrDefaultAsync(s => s.ID == service.ID);  
+                services.Add(tmpService);
+            }
+            ViewBag.PickupCode = repair.PickupCode.Value;
+            ViewBag.RepairID = repairID;
+            return View(services);
         }
 
         // GET: Service/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int? repairID)
         {
-            if (id == null)
+            if (id == null || repairID == null)
             {
                 return NotFound();
             }
 
             var service = await _context.Service
+                .Include(s => s.PriceList)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (service == null)
             {
                 return NotFound();
             }
-
+            ViewBag.RepairID = repairID;
             return View(service);
         }
 
@@ -50,8 +69,21 @@ namespace TabApp.Controllers
         }
 
         // GET: Service/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create(int? repairID)
         {
+            if(repairID == null)
+            {
+                return NotFound();
+            }
+
+            var repair = await _context.Repair.FindAsync(repairID);
+            if (repair == null)
+            {
+                    return NotFound();
+            }
+            
+            ViewBag.RepairID = repairID;
+            ViewData["PriceList"] = new SelectList(_context.PriceList, "ID", "Description");
             return View();
         }
 
@@ -60,21 +92,28 @@ namespace TabApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,WarrantyDate")] Service service)
+        public async Task<IActionResult> Create(int repairID, int priceListID, [Bind("ID,WarrantyDate,PartsCost")] Service service)
         {
             if (ModelState.IsValid)
             {
+                var repair = await _context.Repair.FindAsync(repairID);
+                service.Repair = repair;
+
+                var priceList = await _context.PriceList.FindAsync(priceListID);
+                service.PriceList = priceList;
+
                 _context.Add(service);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { repairID });
             }
+            ViewData["PriceList"] = new SelectList(_context.PriceList, "ID", "Description");
             return View(service);
         }
 
         // GET: Service/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int? repairID)
         {
-            if (id == null)
+            if (id == null || repairID == null)
             {
                 return NotFound();
             }
@@ -84,6 +123,8 @@ namespace TabApp.Controllers
             {
                 return NotFound();
             }
+            
+            ViewBag.RepairID = repairID;
             return View(service);
         }
 
@@ -92,7 +133,7 @@ namespace TabApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,WarrantyDate")] Service service)
+        public async Task<IActionResult> Edit(int id, int repairID, [Bind("ID,WarrantyDate")] Service service)
         {
             if (id != service.ID)
             {
@@ -117,15 +158,15 @@ namespace TabApp.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { repairID });
             }
             return View(service);
         }
 
         // GET: Service/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int? repairID)
         {
-            if (id == null)
+            if (id == null || repairID == null)
             {
                 return NotFound();
             }
@@ -137,18 +178,19 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
+            ViewBag.RepairID = repairID;
             return View(service);
         }
 
         // POST: Service/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, int repairID)
         {
             var service = await _context.Service.FindAsync(id);
             _context.Service.Remove(service);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { repairID } );
         }
 
         private bool ServiceExists(int id)
