@@ -10,6 +10,8 @@
     bool isManager = User.Claims.Any(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role" && c.Value == "Manager");
 
     bool isSupport = User.Claims.Any(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role" && c.Value == "Support");
+
+    bool none = false;
 }
 <head>
     <meta charset="utf-8" />
@@ -54,7 +56,7 @@
                     }
 
 
-                    @if (isAdmin)
+                    @if ( false )
                     {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -119,7 +121,7 @@
                         </li>
                     }
 
-                    @if ( isManager || isAdmin )
+                    @if ( false )
                     {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
