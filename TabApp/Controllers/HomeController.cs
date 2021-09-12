@@ -39,6 +39,11 @@ namespace TabApp.Controllers
             return View();
         }
 
+        public IActionResult PickupCodes()
+        {
+            return View();
+        }
+
 
         public async Task<IActionResult> Profile()
         {
