@@ -10,8 +10,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-
-//kupka
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace TabApp.Controllers
 {
@@ -50,6 +49,68 @@ namespace TabApp.Controllers
                 .FirstAsync();
 
             return View(currentUser);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditProfile(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var person = await _context.Person
+                .Include(r => r.LoginCredentials)
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (person == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["Role"] = person.Role;
+            return View(person);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(int id, [Bind("ID,Name,Surname,Role,Address,Email,Role,PhoneNumber")] Person person)
+        {
+            if (id != person.ID)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                var email = await _context.Person
+                .FirstOrDefaultAsync(p => p.Email.Equals(person.Email) && p.ID != person.ID);
+
+                if (email != null)
+                {
+                    TempData["Error"] = "Email is taken!";
+                    ViewData["Role"] = person.Role;
+                    return View(person);
+                }
+
+                try
+                {
+                    _context.Update(person);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PersonExists(person.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Profile));
+            }
+            return View(person);
         }
 
         [HttpGet("login")]
@@ -155,6 +216,11 @@ namespace TabApp.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private bool PersonExists(int id)
+        {
+            return _context.Person.Any(e => e.ID == id);
         }
     }
 }
