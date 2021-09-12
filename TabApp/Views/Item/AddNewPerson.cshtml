@@ -1,15 +1,15 @@
 @model TabApp.Models.Person
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Add person with item";
 }
 
-<h1>DODAWANIE PERSONA NA POTRZEBY NOWEGO ITEMA</h1>
+<h2>Add person with item</h2>
 
-<h4>Person</h4>
-<hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
+
+        <h5>Person data</h5>
         <form asp-action="AddNewPerson">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -40,24 +40,30 @@
             <div class="form-group">
                 <input asp-for="Role" type="hidden" value="User" class="form-control">
             </div>
+
+            <h5>Item data</h5>
             <div class="form-group">
-                <input type="hidden" value="@ViewBag.Description" name="Description" id="Description" class="form-control">
+                <label aclass="control-label">Serial number</label>
+                <input value="@ViewBag.SerialNumber" name="SerialNumber" id="SerialNumber" class="form-control" readonly>
             </div>
             <div class="form-group">
-                <input type="hidden" value="@ViewBag.SerialNumber" name="SerialNumber" id="SerialNumber" class="form-control">
+                <label class="control-label">Description</label>
+                <input value="@ViewBag.Description" name="Description" id="Description" class="form-control" readonly>
             </div>
+
             <div class="form-group">
                 <input asp-for="Role" type="hidden" value="User" class="form-control">
             </div>
             <div class="form-group">
-                <input type="submit" value="Create item and person" class="btn btn-primary" />
+                <input type="submit" value="Create item and person" class="btn btn-outline-success" style="margin-right:10px;"/>
+                <a class="btn btn-outline-danger" asp-action="Index">Back to List</a>
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    
 </div>
 
 @section Scripts {
