@@ -1,31 +1,29 @@
 @model IEnumerable<TabApp.Models.Service>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "New Repair";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Projekt z przedmiotu Tworzenie Aplikacji Bazodanowych</p>
-    <p>Wykorzystana technologia :  <a href="https://docs.microsoft.com/aspnet/core">ASP.NET</a></p>
-
-
-    <table class="table">
-        <thead>Authors</thead>
-        <tr>
-            <td>Jakub</td>
-        </tr>
-        <tr>
-            <td>Mariusz</td>
-        </tr>
-        <tr>
-            <td>Łukasz</td>
-        </tr>
-        <tr>
-            <td>Jan</td>
-        </tr>
-        <tr>
-            <td>Piotr</td>
-        </tr>
-    </table>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<h3 class="text-center">
+				Choose:
+			</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			 
+			<button type="button" class="btn btn-success btn-block btn-lg">
+                <a class="nav-link text-dark" asp-action="WorkerRaport">Workers raport</a>				
+			</button>
+		</div>
+		<div class="col-md-6">
+			 
+			<button type="button" class="btn btn-success btn-lg btn-block">
+				<a class="nav-link text-dark" asp-action="RepairRaport">Repairs raport</a>	
+			</button>
+		</div>
+	</div>
 </div>
