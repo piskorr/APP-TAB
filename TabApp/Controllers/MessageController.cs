@@ -30,9 +30,19 @@ namespace TabApp.Controllers
         // GET: Reply
         public async Task<IActionResult> Reply(int? messageID)
         {
-            return View(await _context.Message.ToListAsync());
+            if (messageID == null)
+                return RedirectToAction(nameof(Mailbox));
+
+            var msg = _context.Message.Where(msg => msg.ID == messageID).FirstOrDefaultAsync();
+            
+            if(msg == null)
+                return RedirectToAction(nameof(Mailbox));
+
+            ViewBag.receiver = "kutas";
+
+            return View("Create", msg);
         }
-    
+
 
         // GET: Message/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -67,7 +77,7 @@ namespace TabApp.Controllers
             if (ModelState.IsValid)
             {
                 var addr = _context.Person.Where(p => p.LoginCredentials.UserName == recv).FirstOrDefaultAsync();
-                if(addr.Result == null)
+                if (addr.Result == null)
                     return NotFound();
 
                 var sender = _context.Person.FirstOrDefaultAsync(p => p.LoginCredentials.UserName == User.Identity.Name);
@@ -84,25 +94,31 @@ namespace TabApp.Controllers
         public async Task<IActionResult> Mailbox()
         {
             var name = User.Identity.Name;
-            var messages = await _context.Message.Include("Sender").Where( recv => recv.Addressee.LoginCredentials.UserName == name).ToListAsync();
-            
+            var messages = await _context.Message.Include("Sender").Where(recv => recv.Addressee.LoginCredentials.UserName == name).ToListAsync();
+            foreach (var msg in messages)
+            {
+                msg.Sender = await _context.Person.Include("LoginCredentials").Where(p => p.ID == msg.Sender.ID).FirstOrDefaultAsync();
+            }
+
 
             return View(messages);
         }
 
         public async Task<IActionResult> ShowMessage(int? id)
-        { 
-            if(id == null)
+        {
+            if (id == null)
                 return RedirectToAction(nameof(Mailbox));
 
-            var currentUserID = await _context.Person.Where(u => u.LoginCredentials.UserName == User.Identity.Name).Select(p=> p.ID).FirstAsync();
+            var currentUserID = await _context.Person.Where(u => u.LoginCredentials.UserName == User.Identity.Name).Select(p => p.ID).FirstAsync();
 
-            var message = await _context.Message.Include("Sender").Include("Addressee").Where( msg => msg.ID == id).FirstAsync();
+            var message = await _context.Message.Include("Sender").Include("Addressee").Where(msg => msg.ID == id).FirstAsync();
 
-            if(currentUserID != message.Addressee.ID)
+            message.Sender = await _context.Person.Include("LoginCredentials").Where(p => p.ID == message.Sender.ID).FirstOrDefaultAsync();
+
+            if (currentUserID != message.Addressee.ID)
                 return Unauthorized();
 
-            return View(new []{message});
+            return View(new[] { message });
         }
 
         // GET: Message/SendToWorker
@@ -205,14 +221,14 @@ namespace TabApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-             if(id == null)
+            if (id == null)
                 return RedirectToAction(nameof(Mailbox));
 
-            var currentUserID = await _context.Person.Where(u => u.LoginCredentials.UserName == User.Identity.Name).Select(p=> p.ID).FirstAsync();
+            var currentUserID = await _context.Person.Where(u => u.LoginCredentials.UserName == User.Identity.Name).Select(p => p.ID).FirstAsync();
 
-            var message = await _context.Message.Include("Addressee").Where( msg => msg.ID == id).FirstAsync();
+            var message = await _context.Message.Include("Addressee").Where(msg => msg.ID == id).FirstAsync();
 
-            if(currentUserID != message.Addressee.ID)
+            if (currentUserID != message.Addressee.ID)
                 return Unauthorized();
 
             _context.Message.Remove(message);
