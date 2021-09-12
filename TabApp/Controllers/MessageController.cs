@@ -46,10 +46,31 @@ namespace TabApp.Controllers
         }
 
         // GET: Message/Create
-        public IActionResult Create(string? receiver)
+        public IActionResult Create()
         {
-            ViewBag.receiver = receiver;
             return View();
+        }
+        // POST: Message/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(string recv, [Bind("Content, Title")] Message message)
+        {
+            if (ModelState.IsValid)
+            {
+                var addr = _context.Person.Where(p => p.LoginCredentials.UserName == recv).FirstOrDefaultAsync();
+                if(addr.Result == null)
+                    return NotFound();
+
+                var sender = _context.Person.FirstOrDefaultAsync(p => p.LoginCredentials.UserName == User.Identity.Name);
+
+                message.Addressee = addr.Result;
+                message.Sender = sender.Result;
+                _context.Add(message);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Mailbox));
         }
 
         // GET: Message/Mailbox
@@ -100,9 +121,8 @@ namespace TabApp.Controllers
                 message.Sender = sender.Result;
                 _context.Add(message);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
             }
-            return View(message);
+            return RedirectToAction(nameof(Mailbox));
         }
 
         // GET: Message/Edit/5
@@ -164,8 +184,7 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
-            var message = await _context.Message
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var message = await _context.Message.FirstOrDefaultAsync(m => m.ID == id);
             if (message == null)
             {
                 return NotFound();
@@ -177,12 +196,21 @@ namespace TabApp.Controllers
         // POST: Message/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            var message = await _context.Message.FindAsync(id);
+             if(id == null)
+                return RedirectToAction(nameof(Mailbox));
+
+            var currentUserID = await _context.Person.Where(u => u.LoginCredentials.UserName == User.Identity.Name).Select(p=> p.ID).FirstAsync();
+
+            var message = await _context.Message.Include("Addressee").Where( msg => msg.ID == id).FirstAsync();
+
+            if(currentUserID != message.Addressee.ID)
+                return Unauthorized();
+
             _context.Message.Remove(message);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Mailbox));
         }
 
         private bool MessageExists(int id)
