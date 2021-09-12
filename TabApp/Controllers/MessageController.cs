@@ -89,6 +89,9 @@ namespace TabApp.Controllers
         {   
             if (ModelState.IsValid)
             {
+                if(recv == "" || recv == null)
+                    return RedirectToAction(nameof(AddresseeNotFound));
+
                 var addr = _context.Person.Where(p => p.LoginCredentials.UserName == recv).FirstOrDefaultAsync();
                 if (addr.Result == null)
                     return RedirectToAction(nameof(AddresseeNotFound));
