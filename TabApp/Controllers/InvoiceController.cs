@@ -46,16 +46,16 @@ namespace TabApp.Controllers
         }
 
         
-        public async Task<IActionResult> Generate(int? invoiceId)
+        public async Task<IActionResult> Generate(int? invoiceID)
         {
-            if (invoiceId == null)
+            if (invoiceID == null)
             {
                 return NotFound();
             }
 
             var invoice = await _context.Invoice
                 .Include("Repair")
-                .FirstOrDefaultAsync(i => i.ID == invoiceId);
+                .FirstOrDefaultAsync(i => i.ID == invoiceID);
 
             if (invoice == null)
             {
@@ -63,23 +63,51 @@ namespace TabApp.Controllers
             }
 
             var repair = await _context.Repair
-                .Include("Service")
-                .Include("Item.Person")
-                .FirstOrDefaultAsync(r => r.ID == invoice.Repair.ID);
+            .Include("Service")
+            .Include("Item.Person")
+            .FirstOrDefaultAsync(m => m.ID == invoice.Repair.ID); 
 
             if (repair == null)
             {
                 return NotFound();
             }
 
+            var services  = new List<Service>();
+            foreach(var service in repair.Service)
+            {
+                var tmpService =  await _context.Service.Include(s => s.PriceList).FirstOrDefaultAsync(s => s.ID == service.ID);  
+                services.Add(tmpService);
+            }
+
+            repair.Service = services;
             ViewData["NIP"] = invoice.NIP;
-            ViewData["InvoiceDate"] = invoice.InvoiceDate.ToString();
+            ViewData["InvoiceDate"] = invoice.InvoiceDate.ToString("dd/MM/yyyy");
             return View(repair);
         }
 
         // GET: Invoice/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create(int? repairID)
         {
+            if (repairID == null)
+            {
+                return NotFound();
+            }
+           
+            var repair = await _context.Repair
+                .Include("Invoice")
+                .FirstOrDefaultAsync(r => r.ID == repairID);
+            
+            if (repair == null)
+            {
+                return NotFound();
+            }
+            if(repair.Invoice != null)
+            {
+                return RedirectToAction("Generate", "Invoice", new { invoiceID = repair.Invoice.ID});
+            }
+
+           ViewBag.RepairID = repairID;
+
             return View();
         }
 
@@ -88,13 +116,20 @@ namespace TabApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,NIP,InvoiceDate")] Invoice invoice)
+        public async Task<IActionResult> Create(int repairID, [Bind("ID,NIP,InvoiceDate")] Invoice invoice)
         {
             if (ModelState.IsValid)
             {
+                var repair = await _context.Repair.FindAsync(repairID);
+                if (repair == null)
+                {
+                    return NotFound();
+                }
+
+                invoice.Repair = repair;
                 _context.Add(invoice);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Generate", "Invoice", new { invoiceID = invoice.ID});
             }
             return View(invoice);
         }

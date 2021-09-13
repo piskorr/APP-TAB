@@ -4,7 +4,6 @@
     ViewData["Title"] = "Generate";
     var nip = ViewData["NIP"] as string;
     var date = ViewData["InvoiceDate"] as string;
-    var no = 1;
 }
 
 <div id="container" style="margin: 0mm;">
@@ -45,16 +44,16 @@
         <h5>Issuer</h5>
         <table>
             <tr>
-                <td> Name : This company name </td>
+                <td> Name : Tworzenie Aplikacji Bazodanowych </td>
             </tr>
             <tr>
-                <td> Address :  This company address</td>
+                <td> Address : Mariusza Zarzyckiego 6/9, 48-130 Kietrz </td>
             </tr>
             <tr>
-                <td> NIP : This company NIP </td>
+                <td> NIP : 0123456789 </td>
             </tr>
             <tr>
-                <td> Phone :This company name </td>
+                <td> Phone : 987654321 </td>
             </tr>
         </table>
     </div>
@@ -87,17 +86,32 @@
                 <th>Price</th>
             </tr>
 
-            @foreach (var item in Model.Service)
+            @{
+            foreach (var item in Model.Service.Select((value, i) => new { i, value }))
             {
-
+                var service = item.value;
+                var index = item.i + 1;
                 <tr>
-                    <td>@item.ID</td>
-                    <td>@item.Repair.Item.SerialNumber</td>
-                    <td>@item.PriceList.Price</td>
+                    <td>@index</td>
+                    <td>@service.PriceList.Description</td>
+                    
+                    @{
+                    int fullPrice;
+                    if(service.PartsCost != null)
+                    {
+                        fullPrice = service.PriceList.Price + (int)service.PartsCost;
+                    }
+                    else
+                    {
+                        fullPrice = service.PriceList.Price;
+                    }
+                    <td>@fullPrice</td>
+                    }
 
                 </tr>
 
-             }
+            }
+            }
 
         </table>
     </div>
