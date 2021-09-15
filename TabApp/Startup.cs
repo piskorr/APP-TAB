@@ -43,14 +43,14 @@ namespace TabApp
                         }
                         else
                         {
-                            options.UseSqlServer(connectionString);
+                            options.UseSqlite(connectionString);
                         }
 
                     });
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(Policies.EmployeePolicy, policy =>
-                    policy.RequireRole(Roles.Support,Roles.Employee, Roles.Manager, Roles.Admin));
+                    policy.RequireRole(Roles.Support, Roles.Employee, Roles.Manager, Roles.Admin));
                 options.AddPolicy(Policies.ManagerPolicy, policy =>
                     policy.RequireRole(Roles.Manager, Roles.Admin));
             });

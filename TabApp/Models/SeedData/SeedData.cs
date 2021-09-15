@@ -14,15 +14,46 @@ namespace TabApp.Models.SeedData
                 serviceProvider.GetRequiredService<
                     DbContextOptions<dbContext>>()))
             {
+                context.Database.EnsureCreated();
+
                 initRepairStatusTable(context);
 
                 initPickupCodesTable(context);
+
+                initAdminAccount(context);
             }
+        }
+
+        private static void initAdminAccount(dbContext context)
+        {
+            if (context.Person.Any())
+            {
+                return;
+            }
+
+            var person = new Person
+            {
+                Name = "Admin",
+                Surname = "Admin",
+                Address = "Admin",
+                Email = "admin@mail.com",
+                Role = "Admin",
+                PhoneNumber = "000000000",
+                LoginCredentials = new LoginCredentials
+                {
+                    UserName = "admin",
+                    Password = "admin"
+                }
+
+            };
+
+            context.Add(person);
+            context.SaveChanges();
         }
 
         private static void initRepairStatusTable(dbContext context)
         {
-            
+
             if (context.RepairStatus.Any())
             {
                 return;   // DB has been seeded
@@ -58,11 +89,11 @@ namespace TabApp.Models.SeedData
                 return;   // DB has been seeded
             }
 
-            for(int i = 0; i < 10000; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 context.Add(new PickupCode { Value = i.ToString("D4") });
             }
-            
+
             context.SaveChanges();
         }
     }

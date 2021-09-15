@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TabApp.Migrations
 {
     [DbContext(typeof(dbContext))]
-    [Migration("20210911144437_addedTitleToMessage")]
-    partial class addedTitleToMessage
+    [Migration("20210915174456_SeedDb")]
+    partial class SeedDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -101,6 +101,8 @@ namespace TabApp.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(254)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Date")
@@ -110,6 +112,8 @@ namespace TabApp.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
@@ -160,6 +164,20 @@ namespace TabApp.Migrations
                     b.ToTable("Person");
                 });
 
+            modelBuilder.Entity("TabApp.Models.PickupCode", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("PickupCodes");
+                });
+
             modelBuilder.Entity("TabApp.Models.PriceList", b =>
                 {
                     b.Property<int>("ID")
@@ -186,21 +204,20 @@ namespace TabApp.Migrations
                     b.Property<DateTime>("AdmissionDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Cost")
+                    b.Property<int?>("Cost")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("IssueDate")
+                    b.Property<DateTime?>("IssueDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("ItemID")
-                        .IsRequired()
                         .HasColumnType("INTEGER");
 
-                    b.Property<ulong>("PickupCode")
+                    b.Property<int?>("PickupCodeID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Status")
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("RepairStatusID")
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("Warranty")
                         .HasColumnType("INTEGER");
@@ -208,6 +225,11 @@ namespace TabApp.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("ItemID");
+
+                    b.HasIndex("PickupCodeID")
+                        .IsUnique();
+
+                    b.HasIndex("RepairStatusID");
 
                     b.ToTable("Repair");
                 });
@@ -230,6 +252,9 @@ namespace TabApp.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("PartsCost")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("PersonID")
@@ -337,11 +362,21 @@ namespace TabApp.Migrations
                 {
                     b.HasOne("TabApp.Models.Item", "Item")
                         .WithMany("Repair")
-                        .HasForeignKey("ItemID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ItemID");
+
+                    b.HasOne("TabApp.Models.PickupCode", "PickupCode")
+                        .WithOne("Repair")
+                        .HasForeignKey("TabApp.Models.Repair", "PickupCodeID");
+
+                    b.HasOne("TabApp.Models.RepairStatus", "RepairStatus")
+                        .WithMany("Repair")
+                        .HasForeignKey("RepairStatusID");
 
                     b.Navigation("Item");
+
+                    b.Navigation("PickupCode");
+
+                    b.Navigation("RepairStatus");
                 });
 
             modelBuilder.Entity("TabApp.Models.Service", b =>
@@ -398,6 +433,11 @@ namespace TabApp.Migrations
                     b.Navigation("Worker");
                 });
 
+            modelBuilder.Entity("TabApp.Models.PickupCode", b =>
+                {
+                    b.Navigation("Repair");
+                });
+
             modelBuilder.Entity("TabApp.Models.PriceList", b =>
                 {
                     b.Navigation("Service");
@@ -408,6 +448,11 @@ namespace TabApp.Migrations
                     b.Navigation("Invoice");
 
                     b.Navigation("Service");
+                });
+
+            modelBuilder.Entity("TabApp.Models.RepairStatus", b =>
+                {
+                    b.Navigation("Repair");
                 });
 #pragma warning restore 612, 618
         }

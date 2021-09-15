@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TabApp.Migrations
 {
-    public partial class CodeNew : Migration
+    public partial class SeedDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -111,7 +111,8 @@ namespace TabApp.Migrations
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Content = table.Column<string>(type: "TEXT", nullable: true),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Content = table.Column<string>(type: "TEXT", maxLength: 254, nullable: false),
                     Date = table.Column<DateTime>(type: "TEXT", nullable: false),
                     SenderID = table.Column<int>(type: "INTEGER", nullable: true),
                     AddresseeID = table.Column<int>(type: "INTEGER", nullable: true)
@@ -161,10 +162,10 @@ namespace TabApp.Migrations
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     AdmissionDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    IssueDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Cost = table.Column<int>(type: "INTEGER", nullable: false),
+                    IssueDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    Cost = table.Column<int>(type: "INTEGER", nullable: true),
                     Warranty = table.Column<bool>(type: "INTEGER", nullable: false),
-                    ItemID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ItemID = table.Column<int>(type: "INTEGER", nullable: true),
                     RepairStatusID = table.Column<int>(type: "INTEGER", nullable: true),
                     PickupCodeID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
@@ -176,7 +177,7 @@ namespace TabApp.Migrations
                         column: x => x.ItemID,
                         principalTable: "Item",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Repair_PickupCodes_PickupCodeID",
                         column: x => x.PickupCodeID,
@@ -226,6 +227,7 @@ namespace TabApp.Migrations
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     WarrantyDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    PartsCost = table.Column<int>(type: "INTEGER", nullable: true),
                     RepairID = table.Column<int>(type: "INTEGER", nullable: true),
                     PersonID = table.Column<int>(type: "INTEGER", nullable: true),
                     PriceListID = table.Column<int>(type: "INTEGER", nullable: true)
