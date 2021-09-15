@@ -185,7 +185,7 @@
                         </li>
                     }
 
-                    @if (User.Identity.IsAuthenticated)
+                    @if (isAdmin || isManager)
                     {
                         <li class="nav-item">
                             <a class="nav-item nav-link" asp-area="" asp-controller="Statistics" asp-action="Index">

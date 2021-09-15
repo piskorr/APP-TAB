@@ -1,37 +1,58 @@
 @model IEnumerable<TabApp.Models.Repair>
 
 @{
-    ViewData["Title"] = "RepairList";
+    ViewData["Title"] = "Index";
 }
 
-<h2>RepairList</h2>
+<h2>Repairs</h2>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                Admission Date
+                @Html.DisplayNameFor(model => model.AdmissionDate)
             </th>
             <th>
-                Status
+                @Html.DisplayNameFor(model => model.IssueDate)
             </th>
             <th>
-                Pickup Code
+                @Html.DisplayNameFor(model => model.Cost)
             </th>
-            
+            <th>
+                @Html.DisplayNameFor(model => model.RepairStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PickupCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Item)
+            </th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var repair in Model) {
+@foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => repair.AdmissionDate)
+                @Html.DisplayFor(modelItem => item.AdmissionDate)
             </td>
-                        <td>
-                @Html.DisplayFor(modelItem => repair.RepairStatus.Status)
+            <td>
+                @Html.DisplayFor(modelItem => item.IssueDate)
             </td>
-                        <td>
-                @Html.DisplayFor(modelItem => repair.PickupCode.Value)
+            <td>
+                @Html.DisplayFor(modelItem => item.Cost)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RepairStatus.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PickupCode.Value)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Item.Description)
+            </td>
+            <td>
+                <a asp-action="UserServices" asp-route-repairID="@item.ID">Show services</a> 
             </td>
         </tr>
 }
