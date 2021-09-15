@@ -25,6 +25,7 @@ namespace TabApp.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();

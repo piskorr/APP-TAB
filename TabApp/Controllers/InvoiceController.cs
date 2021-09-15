@@ -36,12 +36,14 @@ namespace TabApp.Controllers
             }
 
             var invoice = await _context.Invoice
+                .Include("Repair")
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (invoice == null)
             {
                 return NotFound();
             }
 
+            ViewData["ID"] = invoice.Repair.ID;
             return View(invoice);
         }
 
