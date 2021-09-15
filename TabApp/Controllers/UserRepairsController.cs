@@ -55,7 +55,46 @@ namespace TabApp.Controllers
 
             return View(repairs);
         }
+        public async Task<IActionResult> UserServices(int? repairID)
+        {
+            if (repairID == null)
+            {
+                return NotFound();
+            }
+            
+            var repair = await _context.Repair
+            .Include(r => r.Service)
+            .Include(r => r.PickupCode)
+            .FirstOrDefaultAsync(m => m.ID == repairID);       
 
+            var services  = new List<Service>();
+            foreach(var service in repair.Service)
+            {
+                var tmpService =  await _context.Service.Include(s => s.PriceList).FirstOrDefaultAsync(s => s.ID == service.ID);  
+                services.Add(tmpService);
+            }
+            ViewBag.PickupCode = repair.PickupCode.Value;
+            ViewBag.RepairID = repairID;
+            return View(services);
+        }
+        
+        public async Task<IActionResult> Details(int? id, int? repairID)
+        {
+            if (id == null || repairID == null)
+            {
+                return NotFound();
+            }
+
+            var service = await _context.Service
+                .Include(s => s.PriceList)
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (service == null)
+            {
+                return NotFound();
+            }
+            ViewBag.RepairID = repairID;
+            return View(service);
+        }
         private bool ServiceExists(int id)
         {
             return _context.Service.Any(e => e.ID == id);

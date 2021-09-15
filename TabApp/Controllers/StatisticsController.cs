@@ -68,7 +68,27 @@ namespace TabApp.Controllers
         }
         public IActionResult RepairRaport()
         {
-            return View();
+            var dictionary = new Dictionary<PriceList,int>();
+            var priceList = _context.PriceList.ToList();
+            foreach(var PL in priceList)
+            {
+                dictionary.Add(PL, 0);
+            }
+
+            var services = _context.Service.ToArray();
+            foreach(var service in services)
+            {
+                if(dictionary.ContainsKey(service.PriceList))
+                {
+                    dictionary[service.PriceList]=+1;
+                }
+            }
+            var list = new List<KeyValuePair<PriceList, int>>();
+            foreach(var entity in dictionary)
+            {
+                    list.Add(new KeyValuePair<PriceList, int>(entity.Key,entity.Value));
+            }
+            return View(list);
         }
 
         private bool ServiceExists(int id)

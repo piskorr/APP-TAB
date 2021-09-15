@@ -166,7 +166,7 @@ namespace TabApp.Controllers
                     oldRepair.Warranty = repair.Warranty;
                     oldRepair.RepairStatus = repairStatus;
 
-                    if(repairStatus.Status == RepairStatuses.Issued)
+                    if(repairStatus.Status == RepairStatuses.Ready)
                     {
                         oldRepair.IssueDate = DateTime.Today;
                         if(oldRepair.Service != null)
