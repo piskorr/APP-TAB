@@ -13,22 +13,21 @@ namespace TabApp.Models
         public DateTime AdmissionDate { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime IssueDate { get; set; }
+        public DateTime? IssueDate { get; set; }
 
         [DataType(DataType.Currency)]
-        public int Cost { get; set; }
+        public int? Cost { get; set; }
 
-        public bool Warranty {get; set;}
-
-        public String Status {get; set;}
-
-        public ulong PickupCode {get; set;}
-
-        public int? ItemID { get; set; }
+        public bool Warranty {get; set;}      
 
         public Item Item { get; set; }
 
         public Invoice Invoice { get; set; }
+
+        public virtual RepairStatus RepairStatus { get; set; }
+       
+        [ForeignKey("PickupCodeID")]
+        public virtual PickupCode PickupCode { get; set; }
 
         public ICollection<Service> Service { get; set; }
 

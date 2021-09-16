@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TabApp.Migrations
 {
     [DbContext(typeof(dbContext))]
-    [Migration("20210904193324_models")]
-    partial class models
+    [Migration("20210915174456_SeedDb")]
+    partial class SeedDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -71,6 +71,26 @@ namespace TabApp.Migrations
                     b.ToTable("Item");
                 });
 
+            modelBuilder.Entity("TabApp.Models.LoginCredentials", b =>
+                {
+                    b.Property<int>("ID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("LoginCredentials");
+                });
+
             modelBuilder.Entity("TabApp.Models.Message", b =>
                 {
                     b.Property<int>("ID")
@@ -81,6 +101,8 @@ namespace TabApp.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(254)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Date")
@@ -88,6 +110,11 @@ namespace TabApp.Migrations
 
                     b.Property<int?>("SenderID")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("ID");
 
@@ -110,6 +137,7 @@ namespace TabApp.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -122,6 +150,10 @@ namespace TabApp.Migrations
                         .HasMaxLength(9)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -130,6 +162,20 @@ namespace TabApp.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Person");
+                });
+
+            modelBuilder.Entity("TabApp.Models.PickupCode", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("PickupCodes");
                 });
 
             modelBuilder.Entity("TabApp.Models.PriceList", b =>
@@ -158,21 +204,20 @@ namespace TabApp.Migrations
                     b.Property<DateTime>("AdmissionDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Cost")
+                    b.Property<int?>("Cost")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("IssueDate")
+                    b.Property<DateTime?>("IssueDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("ItemID")
-                        .IsRequired()
                         .HasColumnType("INTEGER");
 
-                    b.Property<ulong>("PickupCode")
+                    b.Property<int?>("PickupCodeID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Status")
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("RepairStatusID")
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("Warranty")
                         .HasColumnType("INTEGER");
@@ -181,13 +226,35 @@ namespace TabApp.Migrations
 
                     b.HasIndex("ItemID");
 
+                    b.HasIndex("PickupCodeID")
+                        .IsUnique();
+
+                    b.HasIndex("RepairStatusID");
+
                     b.ToTable("Repair");
+                });
+
+            modelBuilder.Entity("TabApp.Models.RepairStatus", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("RepairStatus");
                 });
 
             modelBuilder.Entity("TabApp.Models.Service", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("PartsCost")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("PersonID")
@@ -265,6 +332,17 @@ namespace TabApp.Migrations
                     b.Navigation("Person");
                 });
 
+            modelBuilder.Entity("TabApp.Models.LoginCredentials", b =>
+                {
+                    b.HasOne("TabApp.Models.Person", "Person")
+                        .WithOne("LoginCredentials")
+                        .HasForeignKey("TabApp.Models.LoginCredentials", "ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Person");
+                });
+
             modelBuilder.Entity("TabApp.Models.Message", b =>
                 {
                     b.HasOne("TabApp.Models.Person", "Addressee")
@@ -284,11 +362,21 @@ namespace TabApp.Migrations
                 {
                     b.HasOne("TabApp.Models.Item", "Item")
                         .WithMany("Repair")
-                        .HasForeignKey("ItemID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ItemID");
+
+                    b.HasOne("TabApp.Models.PickupCode", "PickupCode")
+                        .WithOne("Repair")
+                        .HasForeignKey("TabApp.Models.Repair", "PickupCodeID");
+
+                    b.HasOne("TabApp.Models.RepairStatus", "RepairStatus")
+                        .WithMany("Repair")
+                        .HasForeignKey("RepairStatusID");
 
                     b.Navigation("Item");
+
+                    b.Navigation("PickupCode");
+
+                    b.Navigation("RepairStatus");
                 });
 
             modelBuilder.Entity("TabApp.Models.Service", b =>
@@ -334,6 +422,8 @@ namespace TabApp.Migrations
 
                     b.Navigation("Item");
 
+                    b.Navigation("LoginCredentials");
+
                     b.Navigation("ReciveMessage");
 
                     b.Navigation("SendMessage");
@@ -341,6 +431,11 @@ namespace TabApp.Migrations
                     b.Navigation("Service");
 
                     b.Navigation("Worker");
+                });
+
+            modelBuilder.Entity("TabApp.Models.PickupCode", b =>
+                {
+                    b.Navigation("Repair");
                 });
 
             modelBuilder.Entity("TabApp.Models.PriceList", b =>
@@ -353,6 +448,11 @@ namespace TabApp.Migrations
                     b.Navigation("Invoice");
 
                     b.Navigation("Service");
+                });
+
+            modelBuilder.Entity("TabApp.Models.RepairStatus", b =>
+                {
+                    b.Navigation("Repair");
                 });
 #pragma warning restore 612, 618
         }

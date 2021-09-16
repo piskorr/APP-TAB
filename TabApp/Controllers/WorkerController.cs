@@ -2,13 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using TabApp.Enums;
 using TabApp.Models;
 
 namespace TabApp.Controllers
 {
+    [Authorize(Policy = Policies.ManagerPolicy)]
     public class WorkerController : Controller
     {
         private readonly dbContext _context;
@@ -60,7 +63,6 @@ namespace TabApp.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 _context.Add(person);
                 await _context.SaveChangesAsync();
                 worker.PersonID = person.ID;
@@ -71,6 +73,56 @@ namespace TabApp.Controllers
             }
             ViewData["PersonID"] = new SelectList(_context.Person, "ID", "Address", worker.PersonID);
             return View(worker);
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            ViewData["EmployeeRole"] = Roles.Employee;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(
+            [Bind("Name,Surname,Address,Email,Role,PhoneNumber")] Person person,
+            [Bind("Earnings,PESEL,AccountNumber,JobPosition")] Worker worker,
+            [Bind("UserName,Password")] LoginCredentials loginCredentials)
+        {
+            if (ModelState.IsValid)
+            {
+                var email = await _context.Person
+                .FirstOrDefaultAsync(l => l.Email.Equals(person.Email));
+
+                var login = await _context.LoginCredentials
+                .FirstOrDefaultAsync(l => l.UserName.Equals(loginCredentials.UserName));
+
+                if (login != null)
+                {
+                    TempData["Error"] = "Login is taken!";
+                    return View();
+                }
+
+                if (email != null)
+                {
+                    TempData["Error"] = "Email is taken!";
+                    return View();
+                }
+
+                _context.Add(person);
+                
+                await _context.SaveChangesAsync();
+                worker.PersonID = person.ID;
+                loginCredentials.ID = person.ID;
+                _context.Add(worker);
+                _context.Add(loginCredentials);
+                await _context.SaveChangesAsync();
+
+                return Redirect("/");
+            }
+
+            TempData["Error"] = "Invalid credentials";
+            return View();
         }
 
         // GET: Worker/Edit/5

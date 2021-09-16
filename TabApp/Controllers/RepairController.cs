@@ -6,9 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TabApp.Models;
+using TabApp.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TabApp.Controllers
 {
+    [Authorize]
     public class RepairController : Controller
     {
         private readonly dbContext _context;
@@ -21,7 +24,7 @@ namespace TabApp.Controllers
         // GET: Repair
         public async Task<IActionResult> Index()
         {
-            var dbContext = _context.Repair.Include(r => r.Item);
+            var dbContext = _context.Repair.Include(r => r.Item).Include(r => r.RepairStatus).Include(r => r.PickupCode);
             return View(await dbContext.ToListAsync());
         }
 
@@ -35,7 +38,10 @@ namespace TabApp.Controllers
 
             var repair = await _context.Repair
                 .Include(r => r.Item)
+                .Include(r => r.RepairStatus)
+                .Include(r => r.PickupCode)
                 .FirstOrDefaultAsync(m => m.ID == id);
+    
             if (repair == null)
             {
                 return NotFound();
@@ -43,28 +49,72 @@ namespace TabApp.Controllers
 
             return View(repair);
         }
-
-        // GET: Repair/Create
-        public IActionResult Create()
+        public IActionResult Add()
         {
-            ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description");
             return View();
         }
+
+        // GET: Repair/Create/itemId
+        public async Task<IActionResult> Create(int? itemID)
+        {
+            if (itemID != null)
+            {
+                var item = await _context.Item.FindAsync(itemID);
+                if (item == null)
+                {
+                    return NotFound();
+                }
+                ViewBag.ItemID = itemID;
+                ViewBag.ItemSerialNumber = item.SerialNumber;
+                ViewBag.ItemDescription = item.Description; 
+            }
+
+            return View();
+        }
+
+
+
+        public string Status { get; set; }
 
         // POST: Repair/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,AdmissionDate,IssueDate,Cost,Warranty,Status,PickupCode,ItemID")] Repair repair)
+        public async Task<IActionResult> Create(int? itemID, [Bind("AdmissionDate,Cost,Warranty")] Repair repair, 
+        [Bind("SerialNumber,Description")] Item item)
         {
             if (ModelState.IsValid)
             {
+                if(itemID != null)
+                {
+                    var existingItem = await _context.Item.FindAsync(itemID);
+                    if (existingItem == null)
+                    {
+                        return NotFound();
+                    }
+                    repair.Item = existingItem;
+                }  
+                else
+                {
+                    _context.Add(item);
+                    await _context.SaveChangesAsync();
+                    repair.Item = item;
+                }
+
+                var repairStatus = await _context.RepairStatus.FindAsync(1);
+                repair.RepairStatus = repairStatus;
+
+
                 _context.Add(repair);
                 await _context.SaveChangesAsync();
+
+                var pickupCode = await _context.PickupCodes.FindAsync(repair.ID);
+                repair.PickupCode = pickupCode;
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description", repair.ItemID);
             return View(repair);
         }
 
@@ -76,12 +126,15 @@ namespace TabApp.Controllers
                 return NotFound();
             }
 
-            var repair = await _context.Repair.FindAsync(id);
+            var repair = await _context.Repair
+                .Include(r => r.RepairStatus)
+                .FirstOrDefaultAsync(m => m.ID == id);
+
             if (repair == null)
             {
                 return NotFound();
             }
-            ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description", repair.ItemID);
+            ViewData["RepairStatus"] = new SelectList(_context.RepairStatus, "ID", "Status", repair.RepairStatus.ID);
             return View(repair);
         }
 
@@ -90,7 +143,7 @@ namespace TabApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,AdmissionDate,IssueDate,Cost,Warranty,Status,PickupCode,ItemID")] Repair repair)
+        public async Task<IActionResult> Edit(int id, int repairStatusID, [Bind("ID,AdmissionDate,Warranty")] Repair repair)
         {
             if (id != repair.ID)
             {
@@ -101,7 +154,38 @@ namespace TabApp.Controllers
             {
                 try
                 {
-                    _context.Update(repair);
+                    var oldRepair = await _context.Repair
+                    .Include(r => r.Item)
+                    .Include(r => r.PickupCode)
+                    .Include(r => r.Service)
+                    .FirstOrDefaultAsync(m => m.ID == id);
+                    
+                    var repairStatus = await _context.RepairStatus.FindAsync(repairStatusID);
+
+                    oldRepair.AdmissionDate = repair.AdmissionDate;
+                    oldRepair.Warranty = repair.Warranty;
+                    oldRepair.RepairStatus = repairStatus;
+
+                    if(repairStatus.Status == RepairStatuses.Ready)
+                    {
+                        oldRepair.IssueDate = DateTime.Today;
+                        if(oldRepair.Service != null)
+                        {
+                            oldRepair.Cost = 0;
+                            foreach(var service in oldRepair.Service)
+                            {
+                                var tmpService =  await _context.Service.Include(s => s.PriceList).FirstOrDefaultAsync(s => s.ID == service.ID); 
+                                if(tmpService != null) 
+                                    oldRepair.Cost += tmpService.PriceList.Price;
+
+                                if(tmpService.PartsCost != null) 
+                                   oldRepair.Cost += tmpService.PartsCost;                       
+                            }
+                        }
+                        
+                    }
+
+                    _context.Update(oldRepair);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -117,7 +201,8 @@ namespace TabApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description", repair.ItemID);
+            ViewData["RepairStatus"] = new SelectList(_context.RepairStatus, "ID", "Status", repair.RepairStatus.ID);
+            //ViewData["ItemID"] = new SelectList(_context.Item, "ID", "Description", repair.ItemID);
             return View(repair);
         }
 
@@ -145,7 +230,11 @@ namespace TabApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var repair = await _context.Repair.FindAsync(id);
+            var repair = await _context.Repair
+            .Include("Invoice")
+            .FirstOrDefaultAsync(m => m.ID == id);
+            _context.Service.RemoveRange(_context.Service.Where(x => x.Repair == repair));
+            _context.Invoice.Remove(repair.Invoice);
             _context.Repair.Remove(repair);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

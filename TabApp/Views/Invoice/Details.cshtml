@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    var id = ViewData["ID"];
 }
 
 <h1>Details</h1>
@@ -25,7 +26,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.ID"> Edit </a> |
-    <a asp-action="Index"> Back to List </a> | 
-    <a asp-action="Generate" asp-route-id="@Model.ID" > Generate </a>
+    <a asp-action="Index"> Back to List </a>  
+    <a asp-controller="Invoice" asp-action="Create" asp-route-repairID="@id"> | Generate</a>
 </div>

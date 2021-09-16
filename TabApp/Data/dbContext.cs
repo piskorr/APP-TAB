@@ -14,9 +14,10 @@ using TabApp.Models;
 
             protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.Entity<Item>().HasMany(x => x.Repair).WithOne(x => x.Item).HasForeignKey(x => x.ItemID).IsRequired();
+        builder.Entity<Item>().HasMany(x => x.Repair).WithOne(x => x.Item);
         builder.Entity<Person>().HasMany(x => x.SendMessage).WithOne(x => x.Sender);
         builder.Entity<Person>().HasMany(x => x.ReciveMessage).WithOne(x => x.Addressee);
+        //builder.Entity<RepairStatus>().HasMany(x => x.Repair).WithOne(x => x.Status);
     }
 
         public DbSet<TabApp.Models.Worker> Worker { get; set; }
@@ -34,4 +35,10 @@ using TabApp.Models;
         public DbSet<TabApp.Models.Repair> Repair { get; set; }
 
         public DbSet<TabApp.Models.Service> Service { get; set; }
-    }
+
+        public DbSet<TabApp.Models.LoginCredentials> LoginCredentials { get; set; }
+
+        public DbSet<TabApp.Models.RepairStatus> RepairStatus { get; set; }
+
+        public DbSet<TabApp.Models.PickupCode> PickupCodes { get; set; }
+}
