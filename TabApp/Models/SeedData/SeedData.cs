@@ -47,6 +47,23 @@ namespace TabApp.Models.SeedData
 
             };
 
+            var support = new Person
+            {
+                Name = "Support",
+                Surname = "Support",
+                Address = "Support",
+                Email = "support@mail.com",
+                Role = "Support",
+                PhoneNumber = "000000000",
+                LoginCredentials = new LoginCredentials
+                {
+                    UserName = "support",
+                    Password = "support"
+                }
+
+            };
+
+            context.Add(support);
             context.Add(person);
             context.SaveChanges();
         }
